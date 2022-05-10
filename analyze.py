@@ -10,7 +10,7 @@ class Analyze :
             isAlpha = element.isalpha()
             if isAlpha  and element != 'x' :
                 isOk = False
-            elif index > 0 and ((element == '/' and self.Equation[index - 1] == '*') or (element == '*' and self.Equation[index - 1] == '/')):
+            elif self.MultiplicationDivisionSignsArentValidates(element, index):
                 isOk = False
             elif self.EqualSignIsValidate(element,index) :
                 isEqualSignOk = True
@@ -21,6 +21,20 @@ class Analyze :
             isOk = False
 
         return isOk
+        
+
+    def MultiplicationDivisionSignsArentValidates(self, element, index) :
+        isSignsAreKo = False
+        lastElement = self.Equation[index - 1]
+        if index > 0 :
+            if (element == '/' and lastElement == '*') or (element == '*' and lastElement == '/') : 
+                isSignsAreKo = True
+            elif (element == '/' or element=='*') and (lastElement == '-' or lastElement == '+') :
+                isSignsAreKo = True
+        elif index == 0 and (element == '/' or element == '*') : 
+                isSignsAreKo = True
+        
+        return isSignsAreKo
 
 
     def EqualSignIsValidate(self, element, index) : 
