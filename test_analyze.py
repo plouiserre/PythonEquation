@@ -87,3 +87,40 @@ class AnalyseTestTest(unittest.TestCase) :
         isOk = analyze.IsValidate()
 
         self.assertFalse(isOk)
+
+
+    def test_positif_negatif_understood(self) :
+        first_equation = "-98x/87=765"
+        analyze_first = Analyze(first_equation)
+        second_equation = "+98x/87=765"
+        analyze_second = Analyze(second_equation)
+        third_equation = "*98x/87=765"
+        analyze_third = Analyze(third_equation)
+        fourth_equation ="/98x/87=765"
+        analyze_fourth = Analyze(fourth_equation)
+
+        is_ok_first = analyze_first.IsValidate()
+        is_ok_second = analyze_second.IsValidate()
+        is_ok_third = analyze_third.IsValidate()
+        is_ok_fourth = analyze_fourth.IsValidate()
+
+        self.assertTrue(is_ok_first)
+        self.assertTrue(is_ok_second)
+        self.assertFalse(is_ok_third)
+        self.assertFalse(is_ok_fourth)
+
+
+    def test_multiplication_or_division_after_addition_or_soustraction(self) :
+        first_equation = "98x+/87=765"
+        analyze_first = Analyze(first_equation)
+        second_equation = "+98x-*87=765"
+        analyze_second = Analyze(second_equation)
+
+        is_ok_first = analyze_first.IsValidate()
+        is_ok_second = analyze_second.IsValidate()
+
+        self.assertFalse(is_ok_first)
+        self.assertFalse(is_ok_second)
+        
+
+    
