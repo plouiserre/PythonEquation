@@ -8,7 +8,7 @@ class AnalyseTestTest(unittest.TestCase) :
         equation = "23x+6 = 66"
         analyze = Analyze(equation)
 
-        isOk = analyze.IsValidate()
+        isOk = analyze.is_validate()
 
         self.assertTrue(isOk)
     
@@ -17,7 +17,7 @@ class AnalyseTestTest(unittest.TestCase) :
         equation = "98x+43a = 87"
         analyze = Analyze(equation)
         
-        isOk = analyze.IsValidate()
+        isOk = analyze.is_validate()
         
         self.assertFalse(isOk)
 
@@ -26,7 +26,7 @@ class AnalyseTestTest(unittest.TestCase) :
         equation = "09x*/2=67" 
         analyze = Analyze(equation)
 
-        isOk = analyze.IsValidate()
+        isOk = analyze.is_validate()
 
         self.assertFalse(isOk)
 
@@ -35,7 +35,7 @@ class AnalyseTestTest(unittest.TestCase) :
         equation = "09x/*2=67" 
         analyze = Analyze(equation)
 
-        isOk = analyze.IsValidate()
+        isOk = analyze.is_validate()
 
         self.assertFalse(isOk)
 
@@ -45,7 +45,7 @@ class AnalyseTestTest(unittest.TestCase) :
         equation = "87x*867"
         analyze = Analyze(equation)
 
-        isOk = analyze.IsValidate()
+        isOk = analyze.is_validate()
 
         self.assertFalse(isOk)
 
@@ -65,12 +65,12 @@ class AnalyseTestTest(unittest.TestCase) :
         equationSixth = "92x+87/=3"
         analyzeSixth = Analyze(equationSixth)
 
-        isOkFirst = analyzeFirst.IsValidate()
-        isOkSecond = analyzeSecond.IsValidate()
-        isOkThird = analyzeThird.IsValidate()
-        isOkFourth = analyzeFourth.IsValidate()
-        isOkFifth = analyzeFifth.IsValidate()
-        isOkSixth = analyzeSixth.IsValidate()
+        isOkFirst = analyzeFirst.is_validate()
+        isOkSecond = analyzeSecond.is_validate()
+        isOkThird = analyzeThird.is_validate()
+        isOkFourth = analyzeFourth.is_validate()
+        isOkFifth = analyzeFifth.is_validate()
+        isOkSixth = analyzeSixth.is_validate()
 
         self.assertFalse(isOkFirst)
         self.assertFalse(isOkSecond)
@@ -84,7 +84,7 @@ class AnalyseTestTest(unittest.TestCase) :
         equation = "32=87x*867"
         analyze = Analyze(equation)
 
-        isOk = analyze.IsValidate()
+        isOk = analyze.is_validate()
 
         self.assertFalse(isOk)
 
@@ -99,10 +99,10 @@ class AnalyseTestTest(unittest.TestCase) :
         fourth_equation ="/98x/87=765"
         analyze_fourth = Analyze(fourth_equation)
 
-        is_ok_first = analyze_first.IsValidate()
-        is_ok_second = analyze_second.IsValidate()
-        is_ok_third = analyze_third.IsValidate()
-        is_ok_fourth = analyze_fourth.IsValidate()
+        is_ok_first = analyze_first.is_validate()
+        is_ok_second = analyze_second.is_validate()
+        is_ok_third = analyze_third.is_validate()
+        is_ok_fourth = analyze_fourth.is_validate()
 
         self.assertTrue(is_ok_first)
         self.assertTrue(is_ok_second)
@@ -116,8 +116,8 @@ class AnalyseTestTest(unittest.TestCase) :
         second_equation = "+98x-*87=765"
         analyze_second = Analyze(second_equation)
 
-        is_ok_first = analyze_first.IsValidate()
-        is_ok_second = analyze_second.IsValidate()
+        is_ok_first = analyze_first.is_validate()
+        is_ok_second = analyze_second.is_validate()
 
         self.assertFalse(is_ok_first)
         self.assertFalse(is_ok_second)

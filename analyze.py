@@ -3,55 +3,55 @@ class Analyze :
         self.Equation = equation
 
 
-    def IsValidate(self) :
-        isOk = True
-        isEqualSignOk = False
+    def is_validate(self) :
+        is_ok = True
+        is_equal_sign_ok = False
         for index, element in enumerate(self.Equation) : 
             isAlpha = element.isalpha()
             if isAlpha  and element != 'x' :
-                isOk = False
-            elif self.MultiplicationDivisionSignsArentValidates(element, index):
-                isOk = False
-            elif self.EqualSignIsValidate(element,index) :
-                isEqualSignOk = True
+                is_ok = False
+            elif self.__validate_multiplication_division(element, index):
+                is_ok = False
+            elif self.__validate_equal(element,index) :
+                is_equal_sign_ok = True
 
-        if isOk and isEqualSignOk == False :
-            isOk = False 
-        elif isOk and self.UnknowInLeftPart() == False :
-            isOk = False
+        if is_ok and is_equal_sign_ok == False :
+            is_ok = False 
+        elif is_ok and self.__validate_unknown() == False :
+            is_ok = False
 
-        return isOk
+        return is_ok
         
 
-    def MultiplicationDivisionSignsArentValidates(self, element, index) :
-        isSignsAreKo = False
-        lastElement = self.Equation[index - 1]
+    def __validate_multiplication_division(self, element, index) :
+        is_signs_are_ko = False
+        last_element = self.Equation[index - 1]
         if index > 0 :
-            if (element == '/' and lastElement == '*') or (element == '*' and lastElement == '/') : 
-                isSignsAreKo = True
-            elif (element == '/' or element=='*') and (lastElement == '-' or lastElement == '+') :
-                isSignsAreKo = True
+            if (element == '/' and last_element == '*') or (element == '*' and last_element == '/') : 
+                is_signs_are_ko = True
+            elif (element == '/' or element=='*') and (last_element == '-' or last_element == '+') :
+                is_signs_are_ko = True
         elif index == 0 and (element == '/' or element == '*') : 
-                isSignsAreKo = True
+                is_signs_are_ko = True
         
-        return isSignsAreKo
+        return is_signs_are_ko
 
 
-    def EqualSignIsValidate(self, element, index) : 
-        isEqualSignOk = False 
+    def __validate_equal(self, element, index) : 
+        is_equal_sign_ok = False 
         if element == '=' and index > 0 and index < len(self.Equation) - 1 :
-            lastElement = self.Equation[index - 1]
-            if lastElement != '+' and lastElement != '-' and lastElement != '*' and lastElement != '/' :
-                isEqualSignOk = True
-        return isEqualSignOk
+            last_element = self.Equation[index - 1]
+            if last_element != '+' and last_element != '-' and last_element != '*' and last_element != '/' :
+                is_equal_sign_ok = True
+        return is_equal_sign_ok
         
 
-    def UnknowInLeftPart(self) : 
+    def __validate_unknown(self) : 
         parts = self.Equation.split("=")
-        IsUnknowInLeftPart = False
+        is_unknow_in_left_part = False
 
         for element in parts[0] :
             if element == 'x' : 
-                IsUnknowInLeftPart = True
+                is_unknow_in_left_part = True
 
-        return IsUnknowInLeftPart
+        return is_unknow_in_left_part
