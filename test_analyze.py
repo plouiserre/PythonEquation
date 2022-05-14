@@ -110,22 +110,6 @@ class AnalyseTestTest(unittest.TestCase) :
         self.assertFalse(is_ok_second)
 
 
-    #TODO if signs are useless delete this UT
-    def test_identification_part_signs(self) : 
-        equation = "98x+75/53*34-96=89"
-        analyze = Analyze(equation)
-
-        analyze.identification()
-        signs = analyze.equation.parts[0].signs
-
-        self.assertEqual(2, len(analyze.equation.parts))
-        self.assertEqual(4, len(signs))
-        self.assertEqual('+', signs[0])
-        self.assertEqual('/', signs[1])
-        self.assertEqual('*', signs[2])
-        self.assertEqual('-', signs[3])
-
-
     def test_identification_signs_numbers(self) : 
         equation = "98x+75/53*34-96=89"
         analyze = Analyze(equation)
