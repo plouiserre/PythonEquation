@@ -21,6 +21,10 @@ A program in python to solve equations
 Entry of the program where the user can interact with it. This file called all other files to resolve the equation.
 ### analyse.py
 All code to validate the equation before resolving and to identify each part.
+### equation.py
+Object represent the equation and have the responsability to determine each part of the equation
+### part.py 
+Represent the left and right side of the equation. Stock all important infos to help to resolve the equation
 ### test_*.py
 All unit tests
 
