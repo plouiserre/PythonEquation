@@ -120,10 +120,10 @@ class AnalyseTest(unittest.TestCase) :
 
         self.assertTrue(is_validate)
         self.assertEqual(4, len(signs_numbers))
-        self.assertEqual('98x+75', signs_numbers[0])
-        self.assertEqual('75/53', signs_numbers[1])
-        self.assertEqual('53*34', signs_numbers[2])
-        self.assertEqual('34-96', signs_numbers[3])
+        self.assertEqual('98x+75', signs_numbers[0].text)
+        self.assertEqual('75/53', signs_numbers[1].text)
+        self.assertEqual('53*34', signs_numbers[2].text)
+        self.assertEqual('34-96', signs_numbers[3].text)
 
 
 
@@ -137,12 +137,12 @@ class AnalyseTest(unittest.TestCase) :
 
         self.assertTrue(is_validate)
         self.assertEqual(4, len(signs_numbers))
-        self.assertEqual('98x+75', signs_numbers[0])
-        self.assertEqual('75/-53', signs_numbers[1])
-        self.assertEqual('53*-34', signs_numbers[2])
-        self.assertEqual('34-96', signs_numbers[3])
+        self.assertEqual('98x+75', signs_numbers[0].text)
+        self.assertEqual('75/-53', signs_numbers[1].text)
+        self.assertEqual('53*-34', signs_numbers[2].text)
+        self.assertEqual('34-96', signs_numbers[3].text)
 
-
+    
     def test_identifications_multi_occurences(self) : 
         equation = "98x+75/-53*-34-98=89"
         analyze = Analyze(equation)
@@ -153,8 +153,30 @@ class AnalyseTest(unittest.TestCase) :
 
         self.assertTrue(is_validate)
         self.assertEqual(4, len(signs_numbers))
-        self.assertEqual('98x+75', signs_numbers[0])
-        self.assertEqual('75/-53', signs_numbers[1])
-        self.assertEqual('53*-34', signs_numbers[2])
-        self.assertEqual('34-98', signs_numbers[3])
+        self.assertEqual('98x+75', signs_numbers[0].text)
+        self.assertEqual('75/-53', signs_numbers[1].text)
+        self.assertEqual('53*-34', signs_numbers[2].text)
+        #TODO modifier l'algo pour que ca soit -34-98
+        self.assertEqual('34-98', signs_numbers[3].text)
+
+
+    def test_position_sign_numbers(self) : 
+        equation = "87x+65/-69*89=666"
+        analyze = Analyze(equation)
+
+        is_validate = analyze.is_validate()
+        analyze.identification()
+        signs_numbers = analyze.equation.parts[0].signs_numbers
+        first_sign_number = signs_numbers[0]
+        second_sign_number = signs_numbers[1]
+        third_sign_number = signs_numbers[2]
+
+        self.assertTrue(is_validate)
+        self.assertEqual(3, len(signs_numbers))
+        self.assertEqual("87x+65", first_sign_number.text)
+        self.assertEqual(0, first_sign_number.position)
+        self.assertEqual("65/-69", second_sign_number.text)
+        self.assertEqual(1, second_sign_number.position)
+        self.assertEqual("69*89", third_sign_number.text)
+        self.assertEqual(2, third_sign_number.position)
     

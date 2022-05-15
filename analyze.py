@@ -1,6 +1,7 @@
 import re 
 
 from equation import Equation
+from signnumber import SignNumber
 
 class Analyze : 
     def __init__(self, equation) :
@@ -107,7 +108,8 @@ class Analyze :
                 save_indexs[first_number] = first_index
                 last_index = self.__get_index(last_number, equation, save_indexs, True)
                 save_indexs[last_number] = last_index
-                sign_number = equation[first_index : last_index]
+                text_sign_number = equation[first_index : last_index]
+                sign_number = SignNumber(text_sign_number, 0, index, 0)
                 self.equation.parts[0].signs_numbers.append(sign_number)
 
 

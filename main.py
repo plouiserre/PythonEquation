@@ -10,6 +10,7 @@ if isValidate :
     input.identification()
     for part in input.equation.parts : 
         print("Text of part %s of the equation " % part.text)
+        #TODO ici il faut améliorer le code
         print("Group of part %s of the equation " % part.signs_numbers)
     
 
