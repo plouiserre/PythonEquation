@@ -2,7 +2,7 @@ import unittest
 
 from analyze import Analyze
 
-class AnalyseTestTest(unittest.TestCase) :
+class AnalyseTest(unittest.TestCase) :
 
     def test_validate_equation_is_ok(self) :
         equation = "23x+6 = 66"
@@ -114,9 +114,11 @@ class AnalyseTestTest(unittest.TestCase) :
         equation = "98x+75/53*34-96=89"
         analyze = Analyze(equation)
 
+        is_validate = analyze.is_validate()
         analyze.identification()
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
+        self.assertTrue(is_validate)
         self.assertEqual(4, len(signs_numbers))
         self.assertEqual('98x+75', signs_numbers[0])
         self.assertEqual('75/53', signs_numbers[1])
@@ -129,8 +131,8 @@ class AnalyseTestTest(unittest.TestCase) :
         equation = "98x+75/-53*-34-96=89"
         analyze = Analyze(equation)
 
-        analyze.identification()
         is_validate = analyze.is_validate()
+        analyze.identification()
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
         self.assertTrue(is_validate)
@@ -145,8 +147,8 @@ class AnalyseTestTest(unittest.TestCase) :
         equation = "98x+75/-53*-34-98=89"
         analyze = Analyze(equation)
 
-        analyze.identification()
         is_validate = analyze.is_validate()
+        analyze.identification()
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
         self.assertTrue(is_validate)

@@ -5,8 +5,6 @@ from equation import Equation
 class Analyze : 
     def __init__(self, equation) :
         self.equation = Equation(equation)
-        #TODO supprimer self.signs
-        self.signs = []
         self.parts = []
 
 
@@ -69,18 +67,16 @@ class Analyze :
 
 
     def identification(self) :
-        numbers = self.get_numbers()
+        numbers = self.__get_numbers()
 
-        self.equation.get_parts()
-
-        self.concatene_numbers_signs(numbers)
+        self.__concatene_numbers_signs(numbers)
 
 
-    def get_numbers(self) : 
+    def __get_numbers(self) : 
         numbers = []
         number = ''
         for element in self.equation.text :
-            if self.is_numeral(element):
+            if self.__is_numeral(element):
                 number += element   
             elif number == '=':  
                 numbers.append(number)  
@@ -93,34 +89,29 @@ class Analyze :
         return numbers
 
     
-    def is_numeral(self, element) :
+    def __is_numeral(self, element) :
         if element != '+' and element != '-' and element != '*' and element != '/' and element != '=' and element != 'x':
             return True 
         else :
             return False
 
 
-    def get_numbers_from_split(self, text, sign) : 
-        number = text.split(sign)[0]
-        return number
-
-
-    def concatene_numbers_signs(self, numbers) :
+    def __concatene_numbers_signs(self, numbers) :
         equation = self.equation.text
         save_indexs = {}
         for index, _ in enumerate(numbers) : 
             if index < len(numbers) - 1 : 
                 first_number = numbers[index]
                 last_number= numbers[index+1]
-                first_index = self.get_index(first_number, equation, save_indexs, False)
+                first_index = self.__get_index(first_number, equation, save_indexs, False)
                 save_indexs[first_number] = first_index
-                last_index = self.get_index(last_number, equation, save_indexs, True)
+                last_index = self.__get_index(last_number, equation, save_indexs, True)
                 save_indexs[last_number] = last_index
                 sign_number = equation[first_index : last_index]
                 self.equation.parts[0].signs_numbers.append(sign_number)
 
 
-    def get_index(self, number, text, save_indexs, is_last_index) : 
+    def __get_index(self, number, text, save_indexs, is_last_index) : 
         index = 0
         indexs = re.finditer(number, text)
         for i in indexs : 
