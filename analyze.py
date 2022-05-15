@@ -1,12 +1,20 @@
+import re 
+
+from equation import Equation
+
 class Analyze : 
     def __init__(self, equation) :
-        self.Equation = equation
+        self.equation = Equation(equation)
+        #TODO supprimer self.signs
+        self.signs = []
+        self.parts = []
 
 
     def is_validate(self) :
         is_ok = True
         is_equal_sign_ok = False
-        for index, element in enumerate(self.Equation) : 
+        equation_text= self.equation.text
+        for index, element in enumerate(equation_text) : 
             isAlpha = element.isalpha()
             if isAlpha  and element != 'x' :
                 is_ok = False
@@ -25,7 +33,7 @@ class Analyze :
 
     def __validate_multiplication_division(self, element, index) :
         is_signs_are_ko = False
-        last_element = self.Equation[index - 1]
+        last_element = self.equation.text[index - 1]
         if index > 0 :
             if (element == '/' and last_element == '*') or (element == '*' and last_element == '/') : 
                 is_signs_are_ko = True
@@ -39,19 +47,89 @@ class Analyze :
 
     def __validate_equal(self, element, index) : 
         is_equal_sign_ok = False 
-        if element == '=' and index > 0 and index < len(self.Equation) - 1 :
-            last_element = self.Equation[index - 1]
+        equation_text= self.equation.text
+        if element == '=' and index > 0 and index < len(equation_text) - 1 :
+            last_element = equation_text[index - 1]
             if last_element != '+' and last_element != '-' and last_element != '*' and last_element != '/' :
                 is_equal_sign_ok = True
         return is_equal_sign_ok
         
 
     def __validate_unknown(self) : 
-        parts = self.Equation.split("=")
+        if len(self.parts) == 0 :
+            self.equation.get_parts()
+        
         is_unknow_in_left_part = False
 
-        for element in parts[0] :
+        for element in self.equation.parts[0].text :
             if element == 'x' : 
                 is_unknow_in_left_part = True
 
         return is_unknow_in_left_part
+
+
+    def identification(self) :
+        numbers = self.get_numbers()
+
+        self.equation.get_parts()
+
+        self.concatene_numbers_signs(numbers)
+
+
+    def get_numbers(self) : 
+        numbers = []
+        number = ''
+        for element in self.equation.text :
+            if self.is_numeral(element):
+                number += element   
+            elif number == '=':  
+                numbers.append(number)  
+                number = ''
+                break
+            elif number != '': 
+                numbers.append(number)  
+                number = ''
+
+        return numbers
+
+    
+    def is_numeral(self, element) :
+        if element != '+' and element != '-' and element != '*' and element != '/' and element != '=' and element != 'x':
+            return True 
+        else :
+            return False
+
+
+    def get_numbers_from_split(self, text, sign) : 
+        number = text.split(sign)[0]
+        return number
+
+
+    def concatene_numbers_signs(self, numbers) :
+        equation = self.equation.text
+        save_indexs = {}
+        for index, _ in enumerate(numbers) : 
+            if index < len(numbers) - 1 : 
+                first_number = numbers[index]
+                last_number= numbers[index+1]
+                first_index = self.get_index(first_number, equation, save_indexs, False)
+                save_indexs[first_number] = first_index
+                last_index = self.get_index(last_number, equation, save_indexs, True)
+                save_indexs[last_number] = last_index
+                sign_number = equation[first_index : last_index]
+                self.equation.parts[0].signs_numbers.append(sign_number)
+
+
+    def get_index(self, number, text, save_indexs, is_last_index) : 
+        index = 0
+        indexs = re.finditer(number, text)
+        for i in indexs : 
+            if (number in save_indexs and save_indexs[number] == i.start())  :
+                continue 
+            else :
+                index = i.start()
+                break
+        if is_last_index : 
+            index += len(number) 
+        return index
+
