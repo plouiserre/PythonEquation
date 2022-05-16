@@ -110,7 +110,10 @@ class Analyze :
                 save_indexs[last_number] = last_index
                 text_sign_number = equation[first_index : last_index]
                 sign_number = SignNumber(text_sign_number, 0, index, 0)
+                sign_number.determine_priority()
                 self.equation.parts[0].signs_numbers.append(sign_number)
+        self.__determine_order_sign_number(self.equation.parts[0].signs_numbers)
+                
 
 
     def __get_index(self, number, text, save_indexs, is_last_index) : 
@@ -125,4 +128,21 @@ class Analyze :
         if is_last_index : 
             index += len(number) 
         return index
+
+
+    def __determine_order_sign_number(self, signs_numbers) :
+        last_order = 0
+        last_order = self.__set_order(last_order, signs_numbers, 2)
+        self.__set_order(last_order, signs_numbers, 1)
+
+    def __set_order(self, last_order, signs_numbers, priority) :
+        for sign_number in signs_numbers :
+            if sign_number.priority == priority : 
+                sign_number.order = last_order
+                last_order = last_order + 1
+            else : 
+                continue 
+        return last_order
+
+
 

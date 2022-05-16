@@ -156,7 +156,7 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual('98x+75', signs_numbers[0].text)
         self.assertEqual('75/-53', signs_numbers[1].text)
         self.assertEqual('53*-34', signs_numbers[2].text)
-        #TODO modifier l'algo pour que ca soit -34-98
+        #TODO modify algo to have -34-98
         self.assertEqual('34-98', signs_numbers[3].text)
 
 
@@ -179,4 +179,44 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(1, second_sign_number.position)
         self.assertEqual("69*89", third_sign_number.text)
         self.assertEqual(2, third_sign_number.position)
-    
+
+
+    def test_priority_sign_numbers(self) : 
+        equation = "87x+65/-69*89-62=666"
+        analyze = Analyze(equation)
+
+        is_validate = analyze.is_validate()
+        analyze.identification()
+        signs_numbers = analyze.equation.parts[0].signs_numbers
+        first_sign_number = signs_numbers[0]
+        second_sign_number = signs_numbers[1]
+        third_sign_number = signs_numbers[2]
+        fourth_sign_number = signs_numbers[3]
+
+        self.assertTrue(is_validate)
+        self.assertEqual(4, len(signs_numbers))
+        self.assertEqual(1, first_sign_number.priority)
+        self.assertEqual(2, second_sign_number.priority)
+        self.assertEqual(2, third_sign_number.priority)
+        self.assertEqual(1, fourth_sign_number.priority)
+
+
+    def test_order_sign_numbers(self) : 
+        equation = "87x+65/-69*89-62=666"
+        analyze = Analyze(equation)
+
+        is_validate = analyze.is_validate()
+        analyze.identification()
+        signs_numbers = analyze.equation.parts[0].signs_numbers
+        first_sign_number = signs_numbers[0]
+        second_sign_number = signs_numbers[1]
+        third_sign_number = signs_numbers[2]
+        fourth_sign_number = signs_numbers[3]
+
+        self.assertTrue(is_validate)
+        self.assertEqual(4, len(signs_numbers))
+        self.assertEqual(2, first_sign_number.order)
+        self.assertEqual(0, second_sign_number.order)
+        self.assertEqual(1, third_sign_number.order)
+        self.assertEqual(3, fourth_sign_number.order)
+       
