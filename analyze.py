@@ -67,6 +67,7 @@ class Analyze :
         return is_unknow_in_left_part
 
 
+    #TODO changer le nom de cette méthode
     def identification(self) :
         numbers = self.__get_numbers()
 
@@ -99,20 +100,33 @@ class Analyze :
 
     def __concatene_numbers_signs(self, numbers) :
         equation = self.equation.text
+        if len(numbers) > 1 :
+            self.__get_signs_numbers_large_equation(numbers, equation)
+        else : 
+            self.__get_signs_numbers_small_equation(numbers, equation)
+        self.__determine_order_sign_number(self.equation.parts[0].signs_numbers)
+
+
+    def __get_signs_numbers_large_equation(self, numbers, equation) : 
         save_indexs = {}
         for index, _ in enumerate(numbers) : 
-            if index < len(numbers) - 1 : 
-                first_number = numbers[index]
-                last_number= numbers[index+1]
-                first_index = self.__get_index(first_number, equation, save_indexs, False)
-                save_indexs[first_number] = first_index
-                last_index = self.__get_index(last_number, equation, save_indexs, True)
-                save_indexs[last_number] = last_index
-                text_sign_number = equation[first_index : last_index]
-                sign_number = SignNumber(text_sign_number, 0, index, 0)
-                sign_number.determine_priority()
-                self.equation.parts[0].signs_numbers.append(sign_number)
-        self.__determine_order_sign_number(self.equation.parts[0].signs_numbers)
+                if index < len(numbers) - 1 : 
+                    first_number = numbers[index]
+                    last_number= numbers[index+1]
+                    first_index = self.__get_index(first_number, equation, save_indexs, False)
+                    save_indexs[first_number] = first_index
+                    last_index = self.__get_index(last_number, equation, save_indexs, True)
+                    save_indexs[last_number] = last_index
+                    text_sign_number = equation[first_index : last_index]
+                    sign_number = SignNumber(text_sign_number, 0, index, 0)
+                    sign_number.determine_priority()
+                    self.equation.parts[0].signs_numbers.append(sign_number)
+
+
+    def __get_signs_numbers_small_equation(self, numbers, equation) :
+        text_sign_number = self.equation.parts[0].text
+        sign_number = SignNumber(text_sign_number, 0, 0, 0)
+        self.equation.parts[0].signs_numbers.append(sign_number)
                 
 
 

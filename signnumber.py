@@ -4,6 +4,7 @@ class SignNumber :
         self.priority = priority
         self.position = position
         self.order = order
+        self.sign = ''
 
 
     def determine_priority(self) : 
@@ -11,3 +12,14 @@ class SignNumber :
             self.priority = 2
         elif '+' in self.text or '-' in self.text :
             self.priority = 1
+
+    
+    def determine_sign(self) :
+        if '*' in self.text :
+            self.sign = '*'
+        elif '/' in self.text : 
+            self.sign = '/'
+        elif '+' in self.text : 
+            self.sign = '+'
+        else :
+            self.sign = '-'
