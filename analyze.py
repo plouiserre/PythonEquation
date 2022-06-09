@@ -7,6 +7,7 @@ class Analyze :
     def __init__(self, equation) :
         self.equation = Equation(equation)
         self.parts = []
+        self.numbers = []
 
 
     def is_validate(self) :
@@ -67,63 +68,65 @@ class Analyze :
         return is_unknow_in_left_part
 
 
-    #TODO changer le nom de cette méthode
-    def identification(self) :
-        numbers = self.__get_numbers()
+    def identicate(self) :
+        self.__get_numbers()
 
-        self.__concatene_numbers_signs(numbers)
+        self.__concatene_numbers_signs()
 
 
     def __get_numbers(self) : 
-        numbers = []
         number = ''
         for element in self.equation.text :
-            if self.__is_numeral(element):
+            if element == '':
+                continue
+            elif self.__is_numeral(element):
                 number += element   
-            elif number == '=':  
-                numbers.append(number)  
+            elif element == '=':  
+                self.numbers.append(number)  
                 number = ''
-                break
-            elif number != '': 
-                numbers.append(number)  
+            elif element != '' and element != '' and element != ' ' and number != '': 
+                self.numbers.append(number)  
                 number = ''
-
-        return numbers
+        if number != '' :
+            self.numbers.append(number)
+            number = ''
+            
 
     
     def __is_numeral(self, element) :
-        if element != '+' and element != '-' and element != '*' and element != '/' and element != '=' and element != 'x':
+        if element != '+' and element != '-' and element != '*' and element != '/' and element != '=' and element != 'x' and element != ' ':
             return True 
         else :
             return False
 
 
-    def __concatene_numbers_signs(self, numbers) :
-        equation = self.equation.text
-        if len(numbers) > 1 :
-            self.__get_signs_numbers_large_equation(numbers, equation)
+    def __concatene_numbers_signs(self) :
+        if len(self.numbers) > 2 :
+            self.__get_signs_numbers_large_equation()
         else : 
-            self.__get_signs_numbers_small_equation(numbers, equation)
+            self.__get_signs_numbers_small_equation()
         self.__determine_order_sign_number(self.equation.parts[0].signs_numbers)
 
 
-    def __get_signs_numbers_large_equation(self, numbers, equation) : 
+    def __get_signs_numbers_large_equation(self) : 
         save_indexs = {}
-        for index, _ in enumerate(numbers) : 
-                if index < len(numbers) - 1 : 
-                    first_number = numbers[index]
-                    last_number= numbers[index+1]
-                    first_index = self.__get_index(first_number, equation, save_indexs, False)
+        left_numbers = self.numbers
+        left_numbers.pop()
+        for index, _ in enumerate(left_numbers) : 
+                if index < len(left_numbers) - 1 : 
+                    first_number = left_numbers[index]
+                    last_number= left_numbers[index+1]
+                    first_index = self.__get_index(first_number, self.equation.text, save_indexs, False)
                     save_indexs[first_number] = first_index
-                    last_index = self.__get_index(last_number, equation, save_indexs, True)
+                    last_index = self.__get_index(last_number, self.equation.text, save_indexs, True)
                     save_indexs[last_number] = last_index
-                    text_sign_number = equation[first_index : last_index]
+                    text_sign_number = self.equation.text[first_index : last_index]
                     sign_number = SignNumber(text_sign_number, 0, index, 0)
                     sign_number.determine_priority()
                     self.equation.parts[0].signs_numbers.append(sign_number)
 
 
-    def __get_signs_numbers_small_equation(self, numbers, equation) :
+    def __get_signs_numbers_small_equation(self) :
         text_sign_number = self.equation.parts[0].text
         sign_number = SignNumber(text_sign_number, 0, 0, 0)
         self.equation.parts[0].signs_numbers.append(sign_number)
@@ -148,6 +151,7 @@ class Analyze :
         last_order = 0
         last_order = self.__set_order(last_order, signs_numbers, 2)
         self.__set_order(last_order, signs_numbers, 1)
+
 
     def __set_order(self, last_order, signs_numbers, priority) :
         for sign_number in signs_numbers :

@@ -110,12 +110,46 @@ class AnalyseTest(unittest.TestCase) :
         self.assertFalse(is_ok_second)
 
 
-    def test_identification_signs_numbers(self) : 
+    #TODO l'utilsiation des parts la mettre autre dans le is_validate
+    def test_identicates_numbers_simple_eq_simple_unknown(self) : 
+        first_equation = "x+2=67" 
+        analyze_first = Analyze(first_equation)
+        second_equation = "x-87=765"
+        analyze_second = Analyze(second_equation)
+        third_equation = "x*87=765"
+        analyze_third = Analyze(third_equation)
+        fourth_equation = "x/2=67" 
+        analyze_fourth = Analyze(fourth_equation)
+        
+        analyze_first.is_validate()
+        analyze_first.identicate()
+        analyze_second.is_validate()
+        analyze_second.identicate()
+        analyze_third.is_validate()
+        analyze_third.identicate()
+        analyze_fourth.is_validate()
+        analyze_fourth.identicate()
+
+        self.assertEqual(2, len(analyze_first.numbers))
+        self.assertEqual('2', analyze_first.numbers[0])
+        self.assertEqual('67', analyze_first.numbers[1])
+        self.assertEqual(2, len(analyze_second.numbers))
+        self.assertEqual('87', analyze_second.numbers[0])
+        self.assertEqual('765', analyze_second.numbers[1])
+        self.assertEqual(2, len(analyze_third.numbers))
+        self.assertEqual('87', analyze_third.numbers[0])
+        self.assertEqual('765', analyze_second.numbers[1])
+        self.assertEqual(2, len(analyze_fourth.numbers))
+        self.assertEqual('2', analyze_fourth.numbers[0])
+        self.assertEqual('67', analyze_first.numbers[1])
+        
+
+    def test_identicates_signs_numbers(self) : 
         equation = "98x+75/53*34-96=89"
         analyze = Analyze(equation)
 
         is_validate = analyze.is_validate()
-        analyze.identification()
+        analyze.identicate()
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
         self.assertTrue(is_validate)
@@ -126,13 +160,12 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual('34-96', signs_numbers[3].text)
 
 
-
-    def test_identifications_relatifs_numbers(self) : 
+    def test_identicates_relatifs_numbers(self) : 
         equation = "98x+75/-53*-34-96=89"
         analyze = Analyze(equation)
 
         is_validate = analyze.is_validate()
-        analyze.identification()
+        analyze.identicate()
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
         self.assertTrue(is_validate)
@@ -143,12 +176,12 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual('34-96', signs_numbers[3].text)
 
     
-    def test_identifications_multi_occurences(self) : 
+    def test_identicates_multi_occurences(self) : 
         equation = "98x+75/-53*-34-98=89"
         analyze = Analyze(equation)
 
         is_validate = analyze.is_validate()
-        analyze.identification()
+        analyze.identicate()
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
         self.assertTrue(is_validate)
@@ -165,7 +198,7 @@ class AnalyseTest(unittest.TestCase) :
         analyze = Analyze(equation)
 
         is_validate = analyze.is_validate()
-        analyze.identification()
+        analyze.identicate()
         signs_numbers = analyze.equation.parts[0].signs_numbers
         first_sign_number = signs_numbers[0]
         second_sign_number = signs_numbers[1]
@@ -186,7 +219,7 @@ class AnalyseTest(unittest.TestCase) :
         analyze = Analyze(equation)
 
         is_validate = analyze.is_validate()
-        analyze.identification()
+        analyze.identicate()
         signs_numbers = analyze.equation.parts[0].signs_numbers
         first_sign_number = signs_numbers[0]
         second_sign_number = signs_numbers[1]
@@ -206,7 +239,7 @@ class AnalyseTest(unittest.TestCase) :
         analyze = Analyze(equation)
 
         is_validate = analyze.is_validate()
-        analyze.identification()
+        analyze.identicate()
         signs_numbers = analyze.equation.parts[0].signs_numbers
         first_sign_number = signs_numbers[0]
         second_sign_number = signs_numbers[1]

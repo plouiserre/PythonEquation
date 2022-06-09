@@ -7,7 +7,8 @@ class Solve :
         eq = self.analyze.equation 
         is_validate = self.analyze.is_validate()
         if is_validate : 
-            self.analyze.identification()
+            self.analyze.identicate()
+            eq.set_numbers(self.analyze.numbers)
             sign_number = eq.parts[0].signs_numbers[0]
             sign_number.determine_sign()
             eq.rewrite(sign_number.sign)
