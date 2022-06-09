@@ -172,8 +172,8 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(4, len(signs_numbers))
         self.assertEqual('98x+75', signs_numbers[0].text)
         self.assertEqual('75/-53', signs_numbers[1].text)
-        self.assertEqual('53*-34', signs_numbers[2].text)
-        self.assertEqual('34-96', signs_numbers[3].text)
+        self.assertEqual('-53*-34', signs_numbers[2].text)
+        self.assertEqual('-34-96', signs_numbers[3].text)
 
     
     def test_identicates_multi_occurences(self) : 
@@ -188,9 +188,8 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(4, len(signs_numbers))
         self.assertEqual('98x+75', signs_numbers[0].text)
         self.assertEqual('75/-53', signs_numbers[1].text)
-        self.assertEqual('53*-34', signs_numbers[2].text)
-        #TODO modify algo to have -34-98
-        self.assertEqual('34-98', signs_numbers[3].text)
+        self.assertEqual('-53*-34', signs_numbers[2].text)
+        self.assertEqual('-34-98', signs_numbers[3].text)
 
 
     def test_position_sign_numbers(self) : 
@@ -210,7 +209,7 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(0, first_sign_number.position)
         self.assertEqual("65/-69", second_sign_number.text)
         self.assertEqual(1, second_sign_number.position)
-        self.assertEqual("69*89", third_sign_number.text)
+        self.assertEqual("-69*89", third_sign_number.text)
         self.assertEqual(2, third_sign_number.position)
 
 

@@ -116,7 +116,7 @@ class Analyze :
                 if index < len(left_numbers) - 1 : 
                     first_number = left_numbers[index]
                     last_number= left_numbers[index+1]
-                    first_index = self.__get_index(first_number, self.equation.text, save_indexs, False)
+                    first_index = self.__get_first_index(first_number, save_indexs)
                     save_indexs[first_number] = first_index
                     last_index = self.__get_index(last_number, self.equation.text, save_indexs, True)
                     save_indexs[last_number] = last_index
@@ -126,12 +126,19 @@ class Analyze :
                     self.equation.parts[0].signs_numbers.append(sign_number)
 
 
+    def __get_first_index(self, first_number, save_indexs) : 
+        first_index = self.__get_index(first_number, self.equation.text, save_indexs, False)
+        if first_index > 0 :
+            sign = self.equation.text[first_index - 1]
+            if sign == '-' :
+                first_index = first_index - 1
+        return first_index
+
     def __get_signs_numbers_small_equation(self) :
         text_sign_number = self.equation.parts[0].text
         sign_number = SignNumber(text_sign_number, 0, 0, 0)
         self.equation.parts[0].signs_numbers.append(sign_number)
                 
-
 
     def __get_index(self, number, text, save_indexs, is_last_index) : 
         index = 0
