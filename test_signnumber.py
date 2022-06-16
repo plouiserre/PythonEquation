@@ -78,3 +78,11 @@ class SignNumberTest(unittest.TestCase) :
         self.assertEqual("-", sign_number_third.sign[1])
         self.assertEqual("/", sign_number_fourth.sign[0])
         self.assertEqual("-", sign_number_fourth.sign[1])
+
+
+    def test_determine_sign_unknown(self) :
+        sign_number = SignNumber("42x",0,0,0)
+        
+        sign_number.determine_sign()
+        
+        self.assertEqual("*", sign_number.sign[0])

@@ -44,11 +44,11 @@ class SignNumber :
 
 
     def __determine_sign_simple(self, text) : 
-        if '*' in text :
-            self.sign.append('*')
+        if '-' in text :
+            self.sign.append('-')
         elif '/' in text : 
             self.sign.append('/')
         elif '+' in text : 
             self.sign.append('+')
         else :
-            self.sign.append('-')
+            self.sign.append('*')

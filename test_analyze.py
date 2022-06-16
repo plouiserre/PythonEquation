@@ -21,6 +21,7 @@ class AnalyseTest(unittest.TestCase) :
         
         self.assertFalse(isOk)
 
+
     def test_validate_division_multiplication_separated(self) :
         equation = "09x/*2=67" 
         analyze = Analyze(equation)
@@ -110,7 +111,6 @@ class AnalyseTest(unittest.TestCase) :
         self.assertFalse(is_ok_second)
 
 
-    #TODO l'utilsiation des parts la mettre autre dans le is_validate
     def test_identicates_numbers_simple_eq_simple_unknown(self) : 
         first_equation = "x+2=67" 
         analyze_first = Analyze(first_equation)
@@ -120,6 +120,8 @@ class AnalyseTest(unittest.TestCase) :
         analyze_third = Analyze(third_equation)
         fourth_equation = "x/2=67" 
         analyze_fourth = Analyze(fourth_equation)
+        fifth_equation = "42x=84"
+        analyze_fifth = Analyze(fifth_equation)
         
         analyze_first.is_validate()
         analyze_first.identicate()
@@ -129,6 +131,8 @@ class AnalyseTest(unittest.TestCase) :
         analyze_third.identicate()
         analyze_fourth.is_validate()
         analyze_fourth.identicate()
+        analyze_fifth.is_validate()
+        analyze_fifth.identicate()
 
         self.assertEqual(2, len(analyze_first.numbers))
         self.assertEqual('2', analyze_first.numbers[0])
@@ -142,9 +146,25 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(2, len(analyze_fourth.numbers))
         self.assertEqual('2', analyze_fourth.numbers[0])
         self.assertEqual('67', analyze_first.numbers[1])
+        self.assertEqual(2, len(analyze_fifth.numbers))
+        self.assertEqual('42', analyze_fifth.numbers[0])
+        self.assertEqual('84', analyze_fifth.numbers[1])
+
+
+    def test_identicates_signs_numbers_simple(self) : 
+        equation = "42x=84"
+        analyze = Analyze(equation)
+
+        is_validate = analyze.is_validate()
+        analyze.identicate()
+        signs_numbers = analyze.equation.parts[0].signs_numbers
+
+        self.assertTrue(is_validate)
+        self.assertEqual(1, len(signs_numbers))
+        self.assertEqual('42x', signs_numbers[0].text)
         
 
-    def test_identicates_signs_numbers(self) : 
+    def test_identicates_signs_numbers_complex(self) : 
         equation = "98x+75/53*34-96=89"
         analyze = Analyze(equation)
 
@@ -169,6 +189,13 @@ class AnalyseTest(unittest.TestCase) :
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
         self.assertTrue(is_validate)
+        #self.assertEqual(5, len(signs_numbers))
+        '''self.assertEqual('98x', signs_numbers[0].text)
+        self.assertEqual('x+75', signs_numbers[1].text)
+        self.assertEqual('75/-53', signs_numbers[2].text)
+        self.assertEqual('-53*-34', signs_numbers[3].text)
+        self.assertEqual('-34-96', signs_numbers[4].text)'''
+
         self.assertEqual(4, len(signs_numbers))
         self.assertEqual('98x+75', signs_numbers[0].text)
         self.assertEqual('75/-53', signs_numbers[1].text)

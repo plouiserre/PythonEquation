@@ -25,7 +25,17 @@ class SolveTest(unittest.TestCase) :
         self.assertEqual(18, solve.unknow)
 
 
-    def test_solve_multiply_equation(self) : 
+    def test_solve_multiply_simple_equation(self) : 
+        equation_text="42x=84"
+        analyze = Analyze(equation_text)
+        solve = Solve(analyze)
+
+        solve.resolve()
+
+        self.assertEqual(2, solve.unknow)
+        
+
+    def test_solve_multiply_medium_equation(self) : 
         equation_text = "x*8 = 80"
         analyze = Analyze(equation_text)
         solve = Solve(analyze)

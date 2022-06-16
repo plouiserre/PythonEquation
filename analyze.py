@@ -81,7 +81,7 @@ class Analyze :
                 continue
             elif self.__is_numeral(element):
                 number += element   
-            elif element == '=':  
+            elif element == '=' and number != '':  
                 self.numbers.append(number)  
                 number = ''
             elif element != '' and element != '' and element != ' ' and number != '': 

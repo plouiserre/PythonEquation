@@ -52,6 +52,16 @@ class EquationTest(unittest.TestCase) :
         self.assertTrue(eq.equation_can_be_solved)
 
 
+    def test_rewrite_multiply_express_equation(self) : 
+        eq = Equation("42x=84")
+
+        eq.set_numbers(["42"])
+        eq.rewrite("")
+
+        self.assertEqual("x=84/42", eq.text)
+        self.assertTrue(eq.equation_can_be_solved)
+
+
     def test_rewrite_divide_equation(self) : 
         eq = Equation("x/5=7")
 
@@ -80,9 +90,19 @@ class EquationTest(unittest.TestCase) :
         eq.solve()
 
         self.assertEqual(12, eq.unknown_value)
+        
+
+    def test_solve_multiply_equation_simple(self) : 
+        eq = Equation("42x=84")
+
+        eq.set_numbers(["42","84"])
+        eq.rewrite("")
+        eq.solve()
+
+        self.assertEqual(2, eq.unknown_value)
 
 
-    def test_solve_multiply_equation(self) : 
+    def test_solve_multiply_equation_medium(self) : 
         eq = Equation("x*5=7")
 
         eq.set_numbers(["5","7"])

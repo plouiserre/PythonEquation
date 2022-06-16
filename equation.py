@@ -34,6 +34,7 @@ class Equation :
     
     def __construct_new_sign(self, signs) :
         new_sign = ''
+        signs = self.__add_multiply_if_otmitted(signs)
         signs_simplified = self.__get_signs_simplified(signs)
         if len(signs_simplified) > 1 : 
             new_sign = self.__get_new_signs_for_complexs(signs)
@@ -43,6 +44,12 @@ class Equation :
             for sign in signs :
                 new_sign += self.__get_new_sign(sign)
         return new_sign
+
+
+    def __add_multiply_if_otmitted(self, signs) : 
+        if signs == '' : 
+            signs = '*'
+        return signs
 
 
     def __get_signs_simplified(self, signs) :
