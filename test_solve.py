@@ -5,7 +5,7 @@ from solve import Solve
 
 class SolveTest(unittest.TestCase) :
 
-    def test_solve_add_equation(self) : 
+    '''def test_solve_add_equation(self) : 
         equation_text = "x+8 = 10"
         analyze = Analyze(equation_text)
         solve = Solve(analyze)
@@ -92,4 +92,5 @@ class SolveTest(unittest.TestCase) :
 
         solve.resolve()
 
-        self.assertEqual(-80, solve.unknow)
+        self.assertEqual(-80, solve.unknow)'''
+

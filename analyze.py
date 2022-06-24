@@ -1,4 +1,5 @@
 import re 
+import copy
 
 from equation import Equation
 from signnumber import SignNumber
@@ -110,8 +111,9 @@ class Analyze :
 
     def __get_signs_numbers_large_equation(self) : 
         save_indexs = {}
-        left_numbers = self.numbers
+        left_numbers = copy.copy(self.numbers)
         left_numbers.pop()
+        self.__get_signs_numbers_unknown(self.equation.text)
         for index, _ in enumerate(left_numbers) : 
                 if index < len(left_numbers) - 1 : 
                     first_number = left_numbers[index]
@@ -126,6 +128,22 @@ class Analyze :
                     self.equation.parts[0].signs_numbers.append(sign_number)
 
 
+    def __get_signs_numbers_unknown(self, text) : 
+        text_sign_number = ''
+        index = 0
+        while index < len(text) : 
+            character = text[index]
+            is_numeral = self.__is_numeral(character)
+            text_sign_number = text_sign_number + character
+            if is_numeral == False and character == 'x' :
+                break
+            index = index + 1
+        if text_sign_number != '' :
+            sign_number = SignNumber(text_sign_number, 0, index, 0)
+            self.equation.parts[0].signs_numbers.append(sign_number)
+
+
+
     def __get_first_index(self, first_number, save_indexs) : 
         first_index = self.__get_index(first_number, self.equation.text, save_indexs, False)
         if first_index > 0 :
@@ -133,11 +151,6 @@ class Analyze :
             if sign == '-' :
                 first_index = first_index - 1
         return first_index
-
-    def __get_signs_numbers_small_equation(self) :
-        text_sign_number = self.equation.parts[0].text
-        sign_number = SignNumber(text_sign_number, 0, 0, 0)
-        self.equation.parts[0].signs_numbers.append(sign_number)
                 
 
     def __get_index(self, number, text, save_indexs, is_last_index) : 
@@ -152,6 +165,12 @@ class Analyze :
         if is_last_index : 
             index += len(number) 
         return index
+
+
+    def __get_signs_numbers_small_equation(self) :
+        text_sign_number = self.equation.parts[0].text
+        sign_number = SignNumber(text_sign_number, 0, 0, 0)
+        self.equation.parts[0].signs_numbers.append(sign_number)
 
 
     def __determine_order_sign_number(self, signs_numbers) :

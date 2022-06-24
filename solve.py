@@ -9,10 +9,9 @@ class Solve :
         if is_validate : 
             self.analyze.identicate()
             eq.set_numbers(self.analyze.numbers)
-            sign_number = eq.parts[0].signs_numbers[0]
-            sign_number.determine_sign()
-            eq.rewrite(sign_number.sign)
-            eq.solve()
+            #sign_number = eq.parts[0].signs_numbers[0]
+            #sign_number.determine_sign()
+            eq.process_resolve()
             self.unknow = eq.unknown_value
         else :
             print("Error")

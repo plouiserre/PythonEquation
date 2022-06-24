@@ -151,7 +151,34 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual('84', analyze_fifth.numbers[1])
 
 
+    def test_identicates_signs_numbers_medium(self) :
+        equation = "3x+3=15"
+        analyze = Analyze(equation)
+
+        analyze.is_validate()
+        analyze.identicate()
+
+        self.assertEqual(3, len(analyze.numbers))
+        self.assertEqual('3', analyze.numbers[0])
+        self.assertEqual('3', analyze.numbers[1])
+        self.assertEqual('15', analyze.numbers[2])
+
+
     def test_identicates_signs_numbers_simple(self) : 
+        equation = "3x+3=15"
+        analyze = Analyze(equation)
+
+        is_validate = analyze.is_validate()
+        analyze.identicate()
+        signs_numbers = analyze.equation.parts[0].signs_numbers
+
+        self.assertTrue(is_validate)
+        self.assertEqual(2, len(signs_numbers))
+        self.assertEqual('3x', signs_numbers[0].text)
+        self.assertEqual('3x+3', signs_numbers[1].text)
+
+
+    def test_identicates_signs_numbers_medium(self) :
         equation = "42x=84"
         analyze = Analyze(equation)
 
@@ -173,11 +200,12 @@ class AnalyseTest(unittest.TestCase) :
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
         self.assertTrue(is_validate)
-        self.assertEqual(4, len(signs_numbers))
-        self.assertEqual('98x+75', signs_numbers[0].text)
-        self.assertEqual('75/53', signs_numbers[1].text)
-        self.assertEqual('53*34', signs_numbers[2].text)
-        self.assertEqual('34-96', signs_numbers[3].text)
+        self.assertEqual(5, len(signs_numbers))
+        self.assertEqual('98x', signs_numbers[0].text)
+        self.assertEqual('98x+75', signs_numbers[1].text)
+        self.assertEqual('75/53', signs_numbers[2].text)
+        self.assertEqual('53*34', signs_numbers[3].text)
+        self.assertEqual('34-96', signs_numbers[4].text)
 
 
     def test_identicates_relatifs_numbers(self) : 
@@ -189,18 +217,12 @@ class AnalyseTest(unittest.TestCase) :
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
         self.assertTrue(is_validate)
-        #self.assertEqual(5, len(signs_numbers))
-        '''self.assertEqual('98x', signs_numbers[0].text)
-        self.assertEqual('x+75', signs_numbers[1].text)
+        self.assertEqual(5, len(signs_numbers))
+        self.assertEqual('98x', signs_numbers[0].text)
+        self.assertEqual('98x+75', signs_numbers[1].text)
         self.assertEqual('75/-53', signs_numbers[2].text)
         self.assertEqual('-53*-34', signs_numbers[3].text)
-        self.assertEqual('-34-96', signs_numbers[4].text)'''
-
-        self.assertEqual(4, len(signs_numbers))
-        self.assertEqual('98x+75', signs_numbers[0].text)
-        self.assertEqual('75/-53', signs_numbers[1].text)
-        self.assertEqual('-53*-34', signs_numbers[2].text)
-        self.assertEqual('-34-96', signs_numbers[3].text)
+        self.assertEqual('-34-96', signs_numbers[4].text)
 
     
     def test_identicates_multi_occurences(self) : 
@@ -212,14 +234,16 @@ class AnalyseTest(unittest.TestCase) :
         signs_numbers = analyze.equation.parts[0].signs_numbers
 
         self.assertTrue(is_validate)
-        self.assertEqual(4, len(signs_numbers))
-        self.assertEqual('98x+75', signs_numbers[0].text)
-        self.assertEqual('75/-53', signs_numbers[1].text)
-        self.assertEqual('-53*-34', signs_numbers[2].text)
-        self.assertEqual('-34-98', signs_numbers[3].text)
+        self.assertEqual(5, len(signs_numbers))
+        self.assertEqual('98x', signs_numbers[0].text)
+        self.assertEqual('98x+75', signs_numbers[1].text)
+        self.assertEqual('75/-53', signs_numbers[2].text)
+        self.assertEqual('-53*-34', signs_numbers[3].text)
+        self.assertEqual('-34-98', signs_numbers[4].text)
 
 
-    def test_position_sign_numbers(self) : 
+    #TODO en ai-je tjs besoin?? si non supprimer le code correspondant
+    '''def test_position_sign_numbers(self) : 
         equation = "87x+65/-69*89=666"
         analyze = Analyze(equation)
 
@@ -237,10 +261,10 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual("65/-69", second_sign_number.text)
         self.assertEqual(1, second_sign_number.position)
         self.assertEqual("-69*89", third_sign_number.text)
-        self.assertEqual(2, third_sign_number.position)
+        self.assertEqual(2, third_sign_number.position)'''
 
-
-    def test_priority_sign_numbers(self) : 
+    #TODO en ai-je tjs besoin?? si non supprimer le code correspondant
+    '''def test_priority_sign_numbers(self) : 
         equation = "87x+65/-69*89-62=666"
         analyze = Analyze(equation)
 
@@ -257,10 +281,11 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(1, first_sign_number.priority)
         self.assertEqual(2, second_sign_number.priority)
         self.assertEqual(2, third_sign_number.priority)
-        self.assertEqual(1, fourth_sign_number.priority)
+        self.assertEqual(1, fourth_sign_number.priority)'''
 
 
-    def test_order_sign_numbers(self) : 
+    #TODO en ai-je tjs besoin?? si non supprimer le code correspondant
+    '''def test_order_sign_numbers(self) : 
         equation = "87x+65/-69*89-62=666"
         analyze = Analyze(equation)
 
@@ -277,5 +302,5 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(2, first_sign_number.order)
         self.assertEqual(0, second_sign_number.order)
         self.assertEqual(1, third_sign_number.order)
-        self.assertEqual(3, fourth_sign_number.order)
+        self.assertEqual(3, fourth_sign_number.order)'''
        
