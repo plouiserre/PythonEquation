@@ -4,48 +4,45 @@ from part import Part
 
 #TODO voir si on explose Equation
 class Equation : 
-    def __init__(self, text) : 
+    def __init__(self, text, analyze) : 
         self.text = text
         self.sign = ''
-        self.numbers = []
+        #self.numbers = []
         self.parts = []
         self.rewrite_eq = []
         self.unknown_value = 0
         self.equation_can_be_solved = False
         self.new_sign =''
-
-
-    def get_parts(self) : 
-        parts = self.text.split("=")
-        for part in parts :
-            find_part = Part(part)
-            self.parts.append(find_part)
-
+        self.analyze = analyze
+        self.is_validate = False
+    
 
     #TODO améliorer
     def process_resolve(self) : 
         self.text = self.text.replace(" ","")
-        self.__determine_all_elements(self.text)
-        while self.equation_can_be_solved == False:
-            self.__rewrite()
-            if self.equation_can_be_solved == False : 
-                self.__simplify(len( self.rewrite_eq) - 1)
-        self.__solve()
+        self.is_validate = self.analyze.is_validate()
+        if self.is_validate :
+            while self.equation_can_be_solved == False:
+                self.analyze.determine_all_elements(self.text)
+                self.__rewrite()
+                if self.equation_can_be_solved == False : 
+                    self.__simplify(len( self.rewrite_eq) - 1)
+            self.__solve()
 
 
     #TODO enlever aussi les signs en param
     def __rewrite(self) : 
-        number = self.numbers[0]
-        signs_finded = self.__detects_signs()
+        number = self.analyze.numbers[0]
+        signs_finded = self.analyze.detects_signs()
         all_signs = ''.join(signs_finded)
         #on détecte l'index du premier sign
         element_to_delete = ''
         if len(all_signs) > 0 :
-            index_sign = self.__get_index_signs(all_signs[0])
-            index_equal = self.__get_index_signs('=')
+            index_sign = self.analyze.get_index_signs(all_signs[0])
+            index_equal = self.analyze.get_index_signs('=')
             element_to_delete = self.text[index_sign : index_equal]
         else : 
-            index_unknown = self.__get_index_signs('x') 
+            index_unknown = self.analyze.get_index_signs('x') 
             element_to_delete = self.text[0 : index_unknown]
 
         #on détecte l'index du = 
@@ -56,36 +53,6 @@ class Equation :
         #self.text = self.text+self.new_sign+number
         self.rewrite_eq.append(self.text + self.new_sign + number)
         self.__is_eq_can_be_solved(len(self.rewrite_eq) - 1)
-
-
-    def __get_index_signs(self, sign) :
-        index = 0 
-        while index < len(self.text) :
-            caracter = self.text[index]
-            if caracter == sign : 
-                break
-            index += 1
-        return index
-
-
-    #TODO factoriser avec la partie analyze
-    def __detects_signs(self) : 
-        index = 0
-        signs = '' 
-        while index < len(self.text) : 
-            character = self.text[index]
-            is_numeral = self.__is_numeral(character)
-            if is_numeral == False and  character != 'x' and character != '=' : 
-                signs = signs + character
-            index += 1
-        return signs
-
-
-    def __is_numeral(self, element) :
-        if element != '+' and element != '-' and element != '*' and element != '/' and element != '=' and element != 'x' and element != ' ':
-            return True 
-        else :
-            return False
 
     
     def __construct_new_sign(self, signs) :
@@ -167,9 +134,9 @@ class Equation :
         sign = ''
         for i in range (0,len(second_part)) : 
             element = second_part[i]
-            if self.__is_numeral(element) and is_first_number_finished == False :
+            if self.analyze.is_numeral(element) and is_first_number_finished == False :
                 first_number_str = first_number_str + element
-            elif self.__is_numeral(element) and is_first_number_finished : 
+            elif self.analyze.is_numeral(element) and is_first_number_finished : 
                 second_number_str = second_number_str + element
             else : 
                 sign = sign + element
@@ -200,9 +167,9 @@ class Equation :
     def __solve(self) : 
         if self.equation_can_be_solved : 
             #if len(self.rewrite_eq) > 1 : 
-            self.__determine_all_elements(self.rewrite_eq[len(self.rewrite_eq)-1])
-            first_number = int(self.numbers[0])
-            second_number = int(self.numbers[1])
+            self.analyze.determine_all_elements(self.rewrite_eq[len(self.rewrite_eq)-1])
+            first_number = int(self.analyze.numbers[0])
+            second_number = int(self.analyze.numbers[1])
 
             if self.new_sign == '-' :
                 self.unknown_value = first_number - second_number
@@ -218,24 +185,4 @@ class Equation :
                 self.unknown_value = first_number * - second_number
 
 
-    #TODO réutiliser PARTOUT cette méthode
-    def __determine_all_elements(self, text) : 
-        number = ''
-        numbers = []
-        index = 0
-        for i in range (0,len(text)) : 
-            element = text[i]
-            if self.__is_numeral(element) :
-                if len(numbers) == index :
-                    number = element
-                    numbers.insert(index, number)
-                else :  
-                    number = number + element
-                    numbers[index] = number
-            elif element == 'x' : 
-                continue
-            elif self.__is_numeral(element) == False and number != '': 
-                index += 1
-        self.numbers.clear()
-        for i in  range (0, len(numbers)) :
-            self.numbers.append(numbers[i])
+    
