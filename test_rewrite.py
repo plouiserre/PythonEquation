@@ -58,6 +58,14 @@ class RewriteTest(unittest.TestCase) :
         self.assertEqual("3x=15-3", rewrite.rewrite_eq)
         self.assertFalse(rewrite.equation_can_be_solved)
 
+        
+    def test_simplify_eq(self) :
+        rewrite = self.__get_rewrite("3x+3=15")
+
+        text = rewrite.simplify("3x=15-3")
+
+        self.assertEqual("3x=12", text)
+
 
     def __get_rewrite(self, text) :
         analyze = Analyze(text)

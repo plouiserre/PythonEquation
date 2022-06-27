@@ -96,3 +96,45 @@ class Rewrite :
         first_part = self.rewrite_eq.split("=")[0]
         if  first_part == "x" : 
             self.equation_can_be_solved = True
+
+
+    #TODO nettoyer
+    def simplify(self, text_to_simplify) :
+        parts = text_to_simplify.split("=")
+        first_part = parts[0]
+        second_part = parts[1]
+        first_number_str = ''
+        second_number_str = ''
+        is_first_number_finished = False
+        sign = ''
+        for i in range (0,len(second_part)) : 
+            element = second_part[i]
+            if self.analyze.is_numeral(element) and is_first_number_finished == False :
+                first_number_str = first_number_str + element
+            elif self.analyze.is_numeral(element) and is_first_number_finished : 
+                second_number_str = second_number_str + element
+            else : 
+                sign = sign + element
+                is_first_number_finished = True
+
+        first_number = int(first_number_str)
+        second_number = int(second_number_str)
+
+        new_second_part = 0
+
+        if sign == '-' :
+            new_second_part = first_number - second_number
+        elif sign == '+' :
+            new_second_part = first_number + second_number
+        elif sign == '/' :
+            new_second_part = first_number / second_number
+        elif sign == '/-' :
+            new_second_part = first_number / - second_number
+        elif sign == '*' :
+            new_second_part = first_number * second_number
+        elif sign == '*-' :
+            new_second_part = first_number * - second_number
+
+        text = first_part+"="+str(new_second_part)
+
+        return text
