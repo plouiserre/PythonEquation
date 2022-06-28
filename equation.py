@@ -1,4 +1,4 @@
-import numbers
+from solve import Solve
 from part import Part
 
 
@@ -26,28 +26,5 @@ class Equation :
                 self.rewrite_eq.append(last_rewrite)
                 if self.rewrite.equation_can_be_solved == False : 
                     self.text = self.rewrite.simplify(last_rewrite)
-            self.__solve()
-
-
-    #TODO retravailler
-    def __solve(self) : 
-        if self.rewrite.equation_can_be_solved : 
-            self.analyze.determine_all_elements(self.rewrite_eq[len(self.rewrite_eq)-1])
-            first_number = int(self.analyze.numbers[0])
-            second_number = int(self.analyze.numbers[1])
-
-            if self.rewrite.new_sign == '-' :
-                self.unknown_value = first_number - second_number
-            elif self.rewrite.new_sign == '+' :
-                self.unknown_value = first_number + second_number
-            elif self.rewrite.new_sign == '/' :
-                self.unknown_value = first_number / second_number
-            elif self.rewrite.new_sign == '/-' :
-                self.unknown_value = first_number / - second_number
-            elif self.rewrite.new_sign == '*' :
-                self.unknown_value = first_number * second_number
-            elif self.rewrite.new_sign == '*-' :
-                self.unknown_value = first_number * - second_number
-
-
-    
+            solve = Solve(self.rewrite, self.analyze, self.rewrite_eq)
+            self.unknown_value = solve.solve()

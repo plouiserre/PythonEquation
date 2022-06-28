@@ -1,96 +1,60 @@
 import unittest
 from analyze import Analyze
-
+from rewrite import Rewrite
 from solve import Solve
 
 class SolveTest(unittest.TestCase) :
 
-    '''def test_solve_add_equation(self) : 
-        equation_text = "x+8 = 10"
-        analyze = Analyze(equation_text)
-        solve = Solve(analyze)
+    def test_solve_add_equation(self) : 
+        text = "x+8 = 10"
+        solve = self.__get_solve(text, ["x=10-8"], "-")
 
-        solve.resolve()
+        result = solve.solve()
 
-        self.assertEqual(2, solve.unknow)
+        self.assertEqual(2, result)
 
 
     def test_solve_substract_equation(self) : 
-        equation_text = "x-8=10"
-        analyze = Analyze(equation_text)
-        solve = Solve(analyze)
+        text = "x-8=10"
+        solve = self.__get_solve(text, ["x=10+8"], "+")
 
-        solve.resolve()
+        result = solve.solve()
 
-        self.assertEqual(18, solve.unknow)
+        self.assertEqual(18, result)
 
 
     def test_solve_multiply_simple_equation(self) : 
-        equation_text="42x=84"
-        analyze = Analyze(equation_text)
-        solve = Solve(analyze)
+        text="42x=84"
+        solve = self.__get_solve(text, ["x=84/42"], "/")
 
-        solve.resolve()
+        result = solve.solve()
 
-        self.assertEqual(2, solve.unknow)
+        self.assertEqual(2, result)
         
 
     def test_solve_multiply_medium_equation(self) : 
-        equation_text = "x*8 = 80"
-        analyze = Analyze(equation_text)
-        solve = Solve(analyze)
+        text = "x*8 = 80"
+        solve = self.__get_solve(text, ["x=80/8"], "/")
 
-        solve.resolve()
+        result = solve.solve()
 
-        self.assertEqual(10, solve.unknow)
+        self.assertEqual(10, result)
 
 
     def test_solve_divide_equation(self) : 
-        equation_text = "x/8=10"
-        analyze = Analyze(equation_text)
-        solve = Solve(analyze)
+        text = "x/8=10"
+        solve = self.__get_solve(text, ["x=10*8"], "*")
 
-        solve.resolve()
+        result = solve.solve()
 
-        self.assertEqual(80, solve.unknow)
+        self.assertEqual(80, result)
 
     
-    def test_solve_add_equation_relatif(self) : 
-        equation_text = "x+-8 = 10"
-        analyze = Analyze(equation_text)
-        solve = Solve(analyze)
-
-        solve.resolve()
-
-        self.assertEqual(18, solve.unknow)
-
-
-    def test_solve_substract_equation_relatif(self) : 
-        equation_text = "x--8=10"
-        analyze = Analyze(equation_text)
-        solve = Solve(analyze)
-
-        solve.resolve()
-
-        self.assertEqual(2, solve.unknow)
-
-
-    def test_solve_multiply_equation_relatif(self) : 
-        equation_text = "x*-8 = 80"
-        analyze = Analyze(equation_text)
-        solve = Solve(analyze)
-
-        solve.resolve()
-
-        self.assertEqual(-10, solve.unknow)
-
-
-    def test_solve_divide_equation_relatif(self) : 
-        equation_text = "x/-8=10"
-        analyze = Analyze(equation_text)
-        solve = Solve(analyze)
-
-        solve.resolve()
-
-        self.assertEqual(-80, solve.unknow)'''
+    def __get_solve(self, text, rewrite_eq, new_sign) :
+        analyze = Analyze(text)
+        rewrite = Rewrite(analyze)
+        rewrite.equation_can_be_solved = True
+        rewrite.new_sign = new_sign
+        solve = Solve(rewrite, analyze, rewrite_eq)
+        return solve
 

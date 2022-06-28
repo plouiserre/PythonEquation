@@ -1,18 +1,28 @@
 class Solve :
-    def __init__(self, analyze) : 
-        self.unknow = 0
+    #TODO simplifier constructeur en supprimant le analyze des paramètres
+    def __init__(self, rewrite, analyze, rewrite_eq) : 
+        self.rewrite = rewrite
         self.analyze = analyze
+        self.rewrite_eq = rewrite_eq
 
-    def resolve(self) : 
-        eq = self.analyze.equation 
-        is_validate = self.analyze.is_validate()
-        if is_validate : 
-            self.analyze.identicate()
-            eq.set_numbers(self.analyze.numbers)
-            #sign_number = eq.parts[0].signs_numbers[0]
-            #sign_number.determine_sign()
-            eq.process_resolve()
-            self.unknow = eq.unknown_value
-        else :
-            print("Error")
+    def solve(self) : 
+        result = 0
+        if self.rewrite.equation_can_be_solved : 
+            self.analyze.determine_all_elements(self.rewrite_eq[len(self.rewrite_eq)-1])
+            first_number = int(self.analyze.numbers[0])
+            second_number = int(self.analyze.numbers[1])
+
+            if self.rewrite.new_sign == '-' :
+                result = first_number - second_number
+            elif self.rewrite.new_sign == '+' :
+                result = first_number + second_number
+            elif self.rewrite.new_sign == '/' :
+                result = first_number / second_number
+            elif self.rewrite.new_sign == '/-' :
+                result = first_number / - second_number
+            elif self.rewrite.new_sign == '*' :
+                result = first_number * second_number
+            elif self.rewrite.new_sign == '*-' :
+                result = first_number * - second_number
+        return result
         
