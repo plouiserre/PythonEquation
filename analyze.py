@@ -2,7 +2,6 @@ import re
 import copy
 
 from part import Part
-from signnumber import SignNumber
 
 class Analyze : 
 
