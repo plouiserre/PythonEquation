@@ -52,7 +52,7 @@ class SolveTest(unittest.TestCase) :
     
     def __get_solve(self, text, rewrite_eq, new_sign) :
         analyze = Analyze(text)
-        rewrite = Rewrite(analyze)
+        rewrite = Rewrite()
         rewrite.equation_can_be_solved = True
         rewrite.new_sign = new_sign
         solve = Solve(rewrite, analyze, rewrite_eq)

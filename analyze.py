@@ -10,6 +10,7 @@ class Analyze :
         self.text = text
         self.parts = []
         self.numbers = []
+        self.signs = []
         
     def get_parts(self) : 
         parts = self.text.split("=")
@@ -26,40 +27,31 @@ class Analyze :
                 break
             index += 1
         return index
-
-
-    def detects_signs(self) : 
-        index = 0
-        signs = '' 
-        while index < len(self.text) : 
-            character = self.text[index]
-            is_numeral = self.is_numeral(character)
-            if is_numeral == False and  character != 'x' and character != '=' : 
-                signs = signs + character
-            index += 1
-        return signs
-
-
-    #TODO réutiliser PARTOUT cette méthode
+        
+        
     def determine_all_elements(self, text) : 
         self.text = text
         number = ''
         numbers = []
         index = 0
+        self.numbers.clear()
+        self.signs.clear()
         for i in range (0,len(text)) : 
             element = text[i]
             if self.is_numeral(element) :
                 if len(numbers) == index :
                     number = element
-                    numbers.insert(index, number)
+                    numbers.append(number)
                 else :  
                     number = number + element
                     numbers[index] = number
-            elif element == 'x' : 
+            elif element == 'x' :
                 continue
-            elif self.is_numeral(element) == False and number != '': 
-                index += 1
-        self.numbers.clear()
+            elif self.is_numeral(element) == False :  
+                if element != '=' : 
+                    self.signs.append(element)
+                if number != '':
+                    index += 1
         for i in  range (0, len(numbers)) :
             self.numbers.append(numbers[i])
 

@@ -34,13 +34,13 @@ class AnalyseTest(unittest.TestCase) :
     def test_detects_signs(self) : 
         analyze = Analyze("98x+98*67/45-9=87")
 
-        signs = analyze.detects_signs()
+        analyze.determine_all_elements("98x+98*67/45-9=87")
 
-        self.assertEqual(4, len(signs))
-        self.assertEqual('+', signs[0])
-        self.assertEqual('*', signs[1])
-        self.assertEqual('/', signs[2])
-        self.assertEqual('-', signs[3])
+        self.assertEqual(4, len(analyze.signs))
+        self.assertEqual('+', analyze.signs[0])
+        self.assertEqual('*', analyze.signs[1])
+        self.assertEqual('/', analyze.signs[2])
+        self.assertEqual('-', analyze.signs[3])
 
 
     def test_is_numeral(self) : 
@@ -72,7 +72,19 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(analyze.text,"3x+3=15" )
 
 
-    def test_determine_elements_numbers(self) :
+    def test_determine_elements_small_eq(self) :
+        analyze = Analyze("x+5=7")
+
+        analyze.determine_all_elements("x+5=7")
+
+        self.assertEqual(2, len(analyze.numbers))
+        self.assertEqual(analyze.numbers[0],"5" )
+        self.assertEqual(analyze.numbers[1],"7" )
+        self.assertEqual(1, len(analyze.signs))
+        self.assertEqual("+", analyze.signs[0])
+
+
+    def test_determine_elements_medium_eq(self) :
         analyze = Analyze("3x+3=15")
 
         analyze.determine_all_elements("3x+3=15")
@@ -81,11 +93,10 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(analyze.numbers[0],"3" )
         self.assertEqual(analyze.numbers[1],"3" )
         self.assertEqual(analyze.numbers[2],"15" )
+        self.assertEqual(1, len(analyze.signs))
+        self.assertEqual("+", analyze.signs[0])
 
 
-    #TODO prendre uniquement le code de validation et le rajouter dans la partie equation
-    
-    
     def test_validate_equation_is_ok(self) :
         analyze = Analyze("23x+6 = 66")
 

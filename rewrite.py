@@ -1,81 +1,83 @@
+from solve import Solve
+
 class Rewrite :
 
-    def __init__(self, analyze) :
-        self.analyze = analyze
-        self.rewrite_eq = ''
+    def __init__(self) :
+        self.step = ''
         self.equation_can_be_solved = False
         self.new_sign = ''
+        self.signs_simplified = ''
+        self.signs = []
     
-    #TODO retravailler cette méthode
-    #TODO enlever aussi les signs en param
-    def rewrite(self) : 
-        number = self.analyze.numbers[0]
-        signs_finded = self.analyze.detects_signs()
-        all_signs = ''.join(signs_finded)
-        #on détecte l'index du premier sign
-        element_to_delete = ''
+    def rewrite(self, analyze) : 
+        self.analyze = analyze
+        self.signs = self.analyze.signs
+        all_signs = ''.join(self.signs)
+        elements_to_delete = self.__get_elements_to_delete(all_signs)
+        self.__get_this_step(elements_to_delete)
+        self.__is_eq_can_be_solved()
+       
+        return self.step
+
+
+    def __get_elements_to_delete(self, all_signs) :
+        elements_to_delete = ''
         if len(all_signs) > 0 :
             index_sign = self.analyze.get_index_signs(all_signs[0])
             index_equal = self.analyze.get_index_signs('=')
-            element_to_delete = self.analyze.text[index_sign : index_equal]
+            elements_to_delete = self.analyze.text[index_sign : index_equal]
         else : 
             index_unknown = self.analyze.get_index_signs('x') 
-            element_to_delete = self.analyze.text[0 : index_unknown]
-
-        #on détecte l'index du = 
-        #du premier index - 1 à egal ca correspond à element_to_delete
-        #element_to_delete = all_signs + number
-        self.analyze.text = self.analyze.text.replace(element_to_delete,'')
-        self.new_sign = self.__construct_new_sign(signs_finded)
-        self.rewrite_eq = self.analyze.text + self.new_sign + number 
-        self.__is_eq_can_be_solved()
-        return self.rewrite_eq
+            elements_to_delete = self.analyze.text[0 : index_unknown]
+        return elements_to_delete
 
 
-    def __construct_new_sign(self, signs) :
-        new_sign = ''
-        signs = self.__add_multiply_if_otmitted(signs)
-        signs_simplified = self.__get_signs_simplified(signs)
-        if len(signs_simplified) > 1 : 
-            new_sign = self.__get_new_signs_for_complexs(signs)
-        elif signs_simplified != '' :
-            new_sign = self.__get_new_sign(signs_simplified)
+    def __get_this_step(self, elements_to_delete) : 
+        self.analyze.text = self.analyze.text.replace(elements_to_delete,'')
+        self.__construct_new_sign()
+        self.step = self.analyze.text + self.new_sign + self.analyze.numbers[0] 
+        
+
+    def __construct_new_sign(self) :
+        self.__simplified_signs()
+        if len(self.signs_simplified) > 1 : 
+            self.new_sign = self.__get_new_signs_for_complexs()
+        elif self.signs_simplified != '' :
+            self.new_sign = self.__get_new_sign(self.signs_simplified)
         else :
-            for sign in signs :
-                new_sign += self.__get_new_sign(sign)
-        return new_sign
+            for sign in self.signs :
+                self.new_sign += self.__get_new_sign(sign)
 
 
-    def __add_multiply_if_otmitted(self, signs) : 
-        if signs == '' : 
-            signs = '*'
-        return signs
-
-
-    def __get_signs_simplified(self, signs) :
-        signs_to_simplified = ''.join(signs)
+    def __simplified_signs(self) :
+        self.__add_multiply_if_otmitted()
+        signs_to_simplified = ''.join(self.signs)
         if signs_to_simplified == '--' or signs_to_simplified =='++':
-            signs_simplified = '+'
+            self.signs_simplified = '+'
         elif signs_to_simplified == '+-' or signs_to_simplified == '-+' or signs_to_simplified == '-' :
-            signs_simplified = '-'
+            self.signs_simplified = '-'
         elif self.new_sign == '*+' :
-            signs_simplified = '*'
+            self.signs_simplified = '*'
         elif self.new_sign == '/+' :
-            signs_simplified = '/'
+            self.signs_simplified = '/'
         else :
-            signs_simplified = signs_to_simplified
-        return signs_simplified
+            self.signs_simplified = signs_to_simplified
 
 
-    def __get_new_signs_for_complexs (self, signs) :
-        signs_to_simplified = ''.join(signs)
-        if signs_to_simplified == '*-' :
-            signs_simplified = "/-"
-        elif signs_to_simplified == '/-' :
-            signs_simplified = "*-"
+    def __add_multiply_if_otmitted(self) : 
+        if len(self.signs) == 0 : 
+            self.signs.append('*')
+
+
+    def __get_new_signs_for_complexs (self) :
+        new_sign = ''
+        if self.signs == '*-' :
+            new_sign = "/-"
+        elif self.signs == '/-' :
+            new_sign = "*-"
         else :
-            signs_simplified = ''
-        return signs_simplified
+            new_sign = ''
+        return new_sign
 
 
     def __get_new_sign(self, sign) :
@@ -92,48 +94,23 @@ class Rewrite :
 
 
     def __is_eq_can_be_solved(self) :
-        #TODO retravailler pour voir si on peut utiliser la bonne méthode
-        first_part = self.rewrite_eq.split("=")[0]
+        first_part = self.step.split("=")[0]
         if  first_part == "x" : 
             self.equation_can_be_solved = True
 
 
-    #TODO nettoyer
     def simplify(self, text_to_simplify) :
         parts = text_to_simplify.split("=")
         first_part = parts[0]
         second_part = parts[1]
-        first_number_str = ''
-        second_number_str = ''
-        is_first_number_finished = False
-        sign = ''
-        for i in range (0,len(second_part)) : 
-            element = second_part[i]
-            if self.analyze.is_numeral(element) and is_first_number_finished == False :
-                first_number_str = first_number_str + element
-            elif self.analyze.is_numeral(element) and is_first_number_finished : 
-                second_number_str = second_number_str + element
-            else : 
-                sign = sign + element
-                is_first_number_finished = True
+        self.analyze.determine_all_elements(second_part)
 
-        first_number = int(first_number_str)
-        second_number = int(second_number_str)
+        first_number = int(self.analyze.numbers[0])
+        second_number = int(self.analyze.numbers[1])
+        sign = self.analyze.signs[0]
 
-        new_second_part = 0
-
-        if sign == '-' :
-            new_second_part = first_number - second_number
-        elif sign == '+' :
-            new_second_part = first_number + second_number
-        elif sign == '/' :
-            new_second_part = first_number / second_number
-        elif sign == '/-' :
-            new_second_part = first_number / - second_number
-        elif sign == '*' :
-            new_second_part = first_number * second_number
-        elif sign == '*-' :
-            new_second_part = first_number * - second_number
+        solve = Solve()
+        new_second_part = solve.do_the_math(first_number, second_number, sign)
 
         text = first_part+"="+str(new_second_part)
 
