@@ -10,8 +10,8 @@ class Solve :
         result = 0
         if self.rewrite.equation_can_be_solved : 
             self.analyze.determine_all_elements(self.rewrite_eq[len(self.rewrite_eq)-1])
-            first_number = int(self.analyze.numbers[0])
-            second_number = int(self.analyze.numbers[1])
+            first_number = float(self.analyze.numbers[0])
+            second_number = float(self.analyze.numbers[1])
 
             result = self.do_the_math(first_number, second_number, self.rewrite.new_sign)
         

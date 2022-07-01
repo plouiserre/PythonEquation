@@ -8,36 +8,51 @@ class Rewrite :
         self.new_sign = ''
         self.signs_simplified = ''
         self.signs = []
+        self.sign_to_delete = ''
+        self.element_to_delete = ''
+        self.element_to_replace =''
     
     def rewrite(self, analyze) : 
         self.analyze = analyze
         self.signs = self.analyze.signs
-        all_signs = ''.join(self.signs)
-        elements_to_delete = self.__get_elements_to_delete(all_signs)
-        self.__get_this_step(elements_to_delete)
+        all_signs = self.__get_all_signs()
+        self.__get_elements_to_delete(all_signs)
+        self.__get_this_step()
         self.__is_eq_can_be_solved()
        
         return self.step
 
 
+    def __get_all_signs(self) :
+        all_signs = ''
+        for i in range (0,len(self.signs)) : 
+            index = len(self.signs) - i - 1
+            all_signs += self.signs[index]
+        return all_signs
+
+
     def __get_elements_to_delete(self, all_signs) :
-        elements_to_delete = ''
         if len(all_signs) > 0 :
-            index_sign = self.analyze.get_index_signs(all_signs[0])
+            self.sign_to_delete = all_signs[0]
+            index_sign = self.analyze.get_index_signs(self.sign_to_delete)
             index_equal = self.analyze.get_index_signs('=')
-            elements_to_delete = self.analyze.text[index_sign : index_equal]
+            self.elements_to_delete = self.analyze.text[index_sign : index_equal]
+            self.elements_to_replace = ''
         else : 
             index_unknown = self.analyze.get_index_signs('x') 
-            elements_to_delete = self.analyze.text[0 : index_unknown]
-        return elements_to_delete
-
-
-    def __get_this_step(self, elements_to_delete) : 
-        self.analyze.text = self.analyze.text.replace(elements_to_delete,'')
-        self.__construct_new_sign()
-        self.step = self.analyze.text + self.new_sign + self.analyze.numbers[0] 
+            self.sign_to_delete = '*'
+            self.elements_to_delete = self.analyze.text[0 : index_unknown] + 'x'
+            self.element_to_replace = 'x'
         
 
+    def __get_this_step(self) : 
+        self.analyze.text = self.analyze.text.replace(self.elements_to_delete,self.element_to_replace)
+        self.__construct_new_sign()
+        number_index = len(self.analyze.numbers) - 2
+        self.step = self.analyze.text + self.new_sign + self.analyze.numbers[number_index] 
+        
+
+    #TODO tout revoir sur la construction des signs
     def __construct_new_sign(self) :
         self.__simplified_signs()
         if len(self.signs_simplified) > 1 : 
@@ -61,7 +76,8 @@ class Rewrite :
         elif self.new_sign == '/+' :
             self.signs_simplified = '/'
         else :
-            self.signs_simplified = signs_to_simplified
+            self.signs_simplified =  self.sign_to_delete
+
 
 
     def __add_multiply_if_otmitted(self) : 
@@ -105,8 +121,8 @@ class Rewrite :
         second_part = parts[1]
         self.analyze.determine_all_elements(second_part)
 
-        first_number = int(self.analyze.numbers[0])
-        second_number = int(self.analyze.numbers[1])
+        first_number = float(self.analyze.numbers[0])
+        second_number = float(self.analyze.numbers[1])
         sign = self.analyze.signs[0]
 
         solve = Solve()

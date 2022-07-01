@@ -71,7 +71,7 @@ class RewriteTest(unittest.TestCase) :
 
         text = rewrite.simplify("3x=15-3")
 
-        self.assertEqual("3x=12", text)
+        self.assertEqual("3x=12.0", text)
 
 
     def __get_analyze(self, text) :
