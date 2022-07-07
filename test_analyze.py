@@ -31,6 +31,23 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(4, result_index_fourth)
 
 
+    def test_get_index_signs_complex(self) : 
+        analyze_first = Analyze("87x+-86=80")
+        analyze_second = Analyze("46--7x=6545")
+        analyze_third = Analyze("85x*-87=654")
+        analyze_fourth = Analyze("459x/-7=65")
+
+        result_index_first = analyze_first.get_index_signs("+-")
+        result_index_second = analyze_second.get_index_signs("--")
+        result_index_third = analyze_third.get_index_signs("*-")
+        result_index_fourth = analyze_fourth.get_index_signs("/-")
+
+        self.assertEqual(3, result_index_first)
+        self.assertEqual(2, result_index_second)
+        self.assertEqual(3, result_index_third)
+        self.assertEqual(4, result_index_fourth)
+
+
     def test_detects_signs(self) : 
         analyze = Analyze("98x+98*67/45-9=87")
 
@@ -42,6 +59,27 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual('/', analyze.signs[2])
         self.assertEqual('-', analyze.signs[3])
 
+
+    def test_detects_signs_complex(self) : 
+        analyze_first = Analyze("87x+-86=80")
+        analyze_second = Analyze("46--7x=6545")
+        analyze_third = Analyze("85x*-87=654")
+        analyze_fourth = Analyze("459x/-7=65")
+
+        analyze_first.determine_all_elements("87x+-86=80")
+        analyze_second.determine_all_elements("46--7x=6545")
+        analyze_third.determine_all_elements("85x*-87=654")
+        analyze_fourth.determine_all_elements("459x/-7=65")
+
+        self.assertEqual(1, len(analyze_first.signs))
+        self.assertEqual('+-', analyze_first.signs[0])
+        self.assertEqual(1, len(analyze_second.signs))
+        self.assertEqual('--', analyze_second.signs[0])
+        self.assertEqual(1, len(analyze_third.signs))
+        self.assertEqual('*-', analyze_third.signs[0])
+        self.assertEqual(1, len(analyze_fourth.signs))
+        self.assertEqual('/-', analyze_fourth.signs[0])
+        
 
     def test_is_numeral(self) : 
         analyze = Analyze("9x-87x=7")
@@ -184,3 +222,21 @@ class AnalyseTest(unittest.TestCase) :
         self.assertFalse(is_ok)
         self.assertFalse(is_ok_first)
         self.assertFalse(is_ok_second)   
+
+
+
+    def test_validate_relative_eq(self) : 
+        first_analyze = Analyze("x+-2=2")
+        second_analyze = Analyze("x--2=4")
+        third_analyze = Analyze("x*-5=10")
+        fourth_analyze = Analyze("x/-5=10")
+
+        is_ok_first = first_analyze.is_validate()
+        is_ok_second = second_analyze.is_validate()
+        is_ok_third = third_analyze.is_validate()
+        is_ok_fourth = fourth_analyze.is_validate()
+
+        self.assertTrue(is_ok_first)
+        self.assertTrue(is_ok_second)
+        self.assertTrue(is_ok_third)
+        self.assertTrue(is_ok_fourth)

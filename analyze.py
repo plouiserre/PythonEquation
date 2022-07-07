@@ -19,17 +19,22 @@ class Analyze :
 
 
     def get_index_signs(self, sign) :
-        index = 0 
+        index = 0
+        index_end = 0 
         while index < len(self.text) :
-            caracter = self.text[index]
+            len_sign = len(sign)
+            index_end = index + len_sign 
+            caracter = self.text[index : index_end]
             if caracter == sign : 
                 break
             index += 1
         return index
         
-        
+    
+    #TODO simplifier cette méthode
     def determine_all_elements(self, text) : 
         self.text = text
+        is_next_sign_detected = False
         number = ''
         numbers = []
         index = 0
@@ -44,11 +49,17 @@ class Analyze :
                 else :  
                     number = number + element
                     numbers[index] = number
-            elif element == 'x' :
+            elif element == 'x' or is_next_sign_detected:
+                is_next_sign_detected = False
                 continue
             elif self.is_numeral(element) == False :  
                 if element != '=' : 
-                    self.signs.append(element)
+                    if i + 1 < len(text) and self.is_numeral(text[i+1]) == False: 
+                        complex_sign = element + text[i+1]
+                        self.signs.append(complex_sign)
+                        is_next_sign_detected = True
+                    else :
+                        self.signs.append(element)
                 if number != '':
                     index += 1
         for i in  range (0, len(numbers)) :

@@ -13,6 +13,7 @@ class EquationTest(unittest.TestCase) :
 
         self.assertTrue(eq.is_validate)
 
+    
     def test_is_no_validate_equation(self) : 
         eq = self.__get_eq("x/*977=78")
 
@@ -40,7 +41,7 @@ class EquationTest(unittest.TestCase) :
         self.assertEqual("x=12.0/3", eq.steps[1])
 
 
-    def test_eq_rewrite_complexe_eq(self) :
+    def test_eq_rewrite_complex_eq(self) :
         eq = self.__get_eq("5x+5-10*5/10=30")
 
         eq.resolve()
@@ -51,6 +52,19 @@ class EquationTest(unittest.TestCase) :
         self.assertEqual("5x+5=60.0+10", eq.steps[2])
         self.assertEqual("5x=70.0-5", eq.steps[3])
         self.assertEqual("x=65.0/5", eq.steps[4])
+
+
+    def test_eq_rewrite_complex_relative_eq(self) :
+        eq = self.__get_eq("5x+-5-10*5/-10=30")
+
+        eq.resolve()
+
+        self.assertEqual(5, len(eq.steps))
+        self.assertEqual("5x+-5-10*5=30*-10", eq.steps[0])
+        #self.assertEqual("5x+5-10=300.0/5", eq.steps[1])
+        #self.assertEqual("5x+5=60.0+10", eq.steps[2])
+        #self.assertEqual("5x=70.0-5", eq.steps[3])
+        #self.assertEqual("x=65.0/5", eq.steps[4])
     
 
     def test_solve_add_equation(self) : 
@@ -101,7 +115,7 @@ class EquationTest(unittest.TestCase) :
         self.assertEqual(13, eq.unknown_value)
 
 
-    def test_solve_unknown_complexe_equation(self) : 
+    def test_solve_unknown_complex_equation(self) : 
         eq = self.__get_eq("3x+3=15")
         
         eq.resolve()

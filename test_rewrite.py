@@ -55,6 +55,46 @@ class RewriteTest(unittest.TestCase) :
         self.assertTrue(rewrite.equation_can_be_solved)
 
 
+    def test_rewrite_add_relative_equation(self) : 
+        rewrite = Rewrite()
+        
+        analyze = self.__get_analyze("x+-2=2")
+        rewrite.rewrite(analyze)
+
+        self.assertEqual("x=2+2", rewrite.step)
+        self.assertTrue(rewrite.equation_can_be_solved)
+
+
+    def test_rewrite_substract_relative_equation(self) : 
+        rewrite = Rewrite()
+
+        analyze = self.__get_analyze("x--2=2")
+        rewrite.rewrite(analyze)
+
+        self.assertEqual("x=2-2", rewrite.step)
+        self.assertTrue(rewrite.equation_can_be_solved)
+
+
+    def test_rewrite_multiply_relative_equation(self) : 
+        rewrite = Rewrite()
+
+        analyze = self.__get_analyze("x*-2=2")
+        rewrite.rewrite(analyze)
+
+        self.assertEqual("x=2/-2", rewrite.step)
+        self.assertTrue(rewrite.equation_can_be_solved)
+
+
+    def test_rewrite_divide_relative_equation(self) : 
+        rewrite = Rewrite()
+
+        analyze = self.__get_analyze("x/-2=2")
+        rewrite.rewrite(analyze)
+
+        self.assertEqual("x=2*-2", rewrite.step)
+        self.assertTrue(rewrite.equation_can_be_solved)
+
+
     def test_rewrite_unknown_numbers_all_rewrite_equation(self) : 
         rewrite = Rewrite()
 

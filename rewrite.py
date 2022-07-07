@@ -10,30 +10,31 @@ class Rewrite :
         self.signs = []
         self.sign_to_delete = ''
         self.element_to_delete = ''
-        self.element_to_replace =''
+        self.element_to_replace = ''
+        self.signs_good_order = ''
+
     
     def rewrite(self, analyze) : 
         self.analyze = analyze
         self.signs = self.analyze.signs
-        all_signs = self.__get_all_signs()
-        self.__get_elements_to_delete(all_signs)
+        self.__get_signs_good_order()
+        self.__get_elements_to_delete()
         self.__get_this_step()
         self.__is_eq_can_be_solved()
-       
         return self.step
 
 
-    def __get_all_signs(self) :
-        all_signs = ''
+    def __get_signs_good_order(self) :
+        signs_good_order = ''
         for i in range (0,len(self.signs)) : 
             index = len(self.signs) - i - 1
-            all_signs += self.signs[index]
-        return all_signs
+            signs_good_order += self.signs[index]
+        self.signs_good_order = signs_good_order
 
 
-    def __get_elements_to_delete(self, all_signs) :
-        if len(all_signs) > 0 :
-            self.sign_to_delete = all_signs[0]
+    def __get_elements_to_delete(self) :
+        if len(self.signs_good_order) > 0 :
+            self.sign_to_delete = self.signs_good_order[0]
             index_sign = self.analyze.get_index_signs(self.sign_to_delete)
             index_equal = self.analyze.get_index_signs('=')
             self.elements_to_delete = self.analyze.text[index_sign : index_equal]
@@ -71,10 +72,8 @@ class Rewrite :
             self.signs_simplified = '+'
         elif signs_to_simplified == '+-' or signs_to_simplified == '-+' or signs_to_simplified == '-' :
             self.signs_simplified = '-'
-        elif self.new_sign == '*+' :
-            self.signs_simplified = '*'
-        elif self.new_sign == '/+' :
-            self.signs_simplified = '/'
+        elif signs_to_simplified == '*-' or signs_to_simplified == '/-':
+            self.signs_simplified = signs_to_simplified
         else :
             self.signs_simplified =  self.sign_to_delete
 
@@ -85,11 +84,12 @@ class Rewrite :
             self.signs.append('*')
 
 
+    #TODO reprend cette méthode
     def __get_new_signs_for_complexs (self) :
         new_sign = ''
-        if self.signs == '*-' :
+        if self.signs[0] == '*-' :
             new_sign = "/-"
-        elif self.signs == '/-' :
+        elif self.signs[0] == '/-' :
             new_sign = "*-"
         else :
             new_sign = ''
