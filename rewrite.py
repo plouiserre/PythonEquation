@@ -8,10 +8,10 @@ class Rewrite :
         self.new_sign = ''
         self.signs_simplified = ''
         self.signs = []
+        self.signs_good_order = []
         self.sign_to_delete = ''
         self.element_to_delete = ''
         self.element_to_replace = ''
-        self.signs_good_order = ''
 
     
     def rewrite(self, analyze) : 
@@ -25,25 +25,35 @@ class Rewrite :
 
 
     def __get_signs_good_order(self) :
-        signs_good_order = ''
+        self.signs_good_order.clear()
         for i in range (0,len(self.signs)) : 
             index = len(self.signs) - i - 1
-            signs_good_order += self.signs[index]
-        self.signs_good_order = signs_good_order
+            self.signs_good_order.append(self.signs[index])
 
 
     def __get_elements_to_delete(self) :
         if len(self.signs_good_order) > 0 :
             self.sign_to_delete = self.signs_good_order[0]
-            index_sign = self.analyze.get_index_signs(self.sign_to_delete)
-            index_equal = self.analyze.get_index_signs('=')
+            last_occurence = self.__get_last_occurence()
+            index_sign = self.analyze.get_index_signs(self.sign_to_delete, last_occurence)
+            index_equal = self.analyze.get_index_signs('=',1)
             self.elements_to_delete = self.analyze.text[index_sign : index_equal]
             self.elements_to_replace = ''
         else : 
-            index_unknown = self.analyze.get_index_signs('x') 
+            index_unknown = self.analyze.get_index_signs('x',1) 
             self.sign_to_delete = '*'
             self.elements_to_delete = self.analyze.text[0 : index_unknown] + 'x'
             self.element_to_replace = 'x'
+
+
+    def __get_last_occurence(self) : 
+        last_occurence = 0
+        index = 0
+        while index < len(self.signs_good_order) : 
+                if self.sign_to_delete == self.signs_good_order[index] or self.sign_to_delete in self.signs_good_order[index]:
+                    last_occurence += 1
+                index += 1
+        return last_occurence
         
 
     def __get_this_step(self) : 
@@ -53,7 +63,6 @@ class Rewrite :
         self.step = self.analyze.text + self.new_sign + self.analyze.numbers[number_index] 
         
 
-    #TODO tout revoir sur la construction des signs
     def __construct_new_sign(self) :
         self.__simplified_signs()
         if len(self.signs_simplified) > 1 : 
@@ -84,12 +93,11 @@ class Rewrite :
             self.signs.append('*')
 
 
-    #TODO reprend cette méthode
     def __get_new_signs_for_complexs (self) :
         new_sign = ''
-        if self.signs[0] == '*-' :
+        if self.signs_good_order[0] == '*-' :
             new_sign = "/-"
-        elif self.signs[0] == '/-' :
+        elif self.signs_good_order[0] == '/-' :
             new_sign = "*-"
         else :
             new_sign = ''
@@ -120,10 +128,19 @@ class Rewrite :
         first_part = parts[0]
         second_part = parts[1]
         self.analyze.determine_all_elements(second_part)
+        first_number = 0
+        second_number = 0
+        sign = ''
 
-        first_number = float(self.analyze.numbers[0])
-        second_number = float(self.analyze.numbers[1])
-        sign = self.analyze.signs[0]
+        if len(self.analyze.all_signs) == 1 : 
+            first_number = float(self.analyze.numbers[0])
+            second_number = float(self.analyze.numbers[1])
+            sign = self.analyze.all_signs[0]
+        else : 
+            first_number_str = self.analyze.all_signs[0]+self.analyze.numbers[0]
+            first_number = float(first_number_str)
+            second_number = float(self.analyze.numbers[1])
+            sign = self.analyze.all_signs[1]
 
         solve = Solve()
         new_second_part = solve.do_the_math(first_number, second_number, sign)

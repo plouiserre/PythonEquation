@@ -20,10 +20,10 @@ class AnalyseTest(unittest.TestCase) :
         analyze_third = Analyze("85x*87=654")
         analyze_fourth = Analyze("459x/7=65")
 
-        result_index_first = analyze_first.get_index_signs("+")
-        result_index_second = analyze_second.get_index_signs("-")
-        result_index_third = analyze_third.get_index_signs("*")
-        result_index_fourth = analyze_fourth.get_index_signs("/")
+        result_index_first = analyze_first.get_index_signs("+",1)
+        result_index_second = analyze_second.get_index_signs("-",1)
+        result_index_third = analyze_third.get_index_signs("*",1)
+        result_index_fourth = analyze_fourth.get_index_signs("/",1)
 
         self.assertEqual(3, result_index_first)
         self.assertEqual(2, result_index_second)
@@ -37,10 +37,10 @@ class AnalyseTest(unittest.TestCase) :
         analyze_third = Analyze("85x*-87=654")
         analyze_fourth = Analyze("459x/-7=65")
 
-        result_index_first = analyze_first.get_index_signs("+-")
-        result_index_second = analyze_second.get_index_signs("--")
-        result_index_third = analyze_third.get_index_signs("*-")
-        result_index_fourth = analyze_fourth.get_index_signs("/-")
+        result_index_first = analyze_first.get_index_signs("+-",1)
+        result_index_second = analyze_second.get_index_signs("--",1)
+        result_index_third = analyze_third.get_index_signs("*-",1)
+        result_index_fourth = analyze_fourth.get_index_signs("/-",1)
 
         self.assertEqual(3, result_index_first)
         self.assertEqual(2, result_index_second)
@@ -48,16 +48,46 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(4, result_index_fourth)
 
 
+    def test_get_index_signs_specific(self) :
+        analyze_first = Analyze("87x+86+56=80")
+        analyze_second = Analyze("45x-7-98=65")
+        analyze_third = Analyze("46--7x--5=6545")
+        analyze_fourth = Analyze("85x+-87+-81=654")
+        analyze_fifth = Analyze("85x-+87-+6=87")
+
+        result_index_first_first = analyze_first.get_index_signs("+",1)
+        result_index_first_second = analyze_first.get_index_signs("+",2)
+        result_index_second_first = analyze_second.get_index_signs("-",1)
+        result_index_second_second = analyze_second.get_index_signs("-",2)
+        result_index_third_first = analyze_third.get_index_signs("--",1)
+        result_index_third_second = analyze_third.get_index_signs("--",2)
+        result_index_fourth_first = analyze_fourth.get_index_signs("+-",1)
+        result_index_fourth_second = analyze_fourth.get_index_signs("+-",2)
+        result_index_fifth_first = analyze_fifth.get_index_signs("-+",1)
+        result_index_fifth_second = analyze_fifth.get_index_signs("-+",2)
+
+        self.assertEqual(3, result_index_first_first)
+        self.assertEqual(6, result_index_first_second)
+        self.assertEqual(3, result_index_second_first)
+        self.assertEqual(5, result_index_second_second)
+        self.assertEqual(2, result_index_third_first)
+        self.assertEqual(6, result_index_third_second)
+        self.assertEqual(3, result_index_fourth_first)
+        self.assertEqual(7, result_index_fourth_second)
+        self.assertEqual(3, result_index_fifth_first)
+        self.assertEqual(7, result_index_fifth_second)
+
+          
     def test_detects_signs(self) : 
         analyze = Analyze("98x+98*67/45-9=87")
 
         analyze.determine_all_elements("98x+98*67/45-9=87")
 
-        self.assertEqual(4, len(analyze.signs))
-        self.assertEqual('+', analyze.signs[0])
-        self.assertEqual('*', analyze.signs[1])
-        self.assertEqual('/', analyze.signs[2])
-        self.assertEqual('-', analyze.signs[3])
+        self.assertEqual(4, len(analyze.all_signs))
+        self.assertEqual('+', analyze.all_signs[0])
+        self.assertEqual('*', analyze.all_signs[1])
+        self.assertEqual('/', analyze.all_signs[2])
+        self.assertEqual('-', analyze.all_signs[3])
 
 
     def test_detects_signs_complex(self) : 
@@ -71,14 +101,14 @@ class AnalyseTest(unittest.TestCase) :
         analyze_third.determine_all_elements("85x*-87=654")
         analyze_fourth.determine_all_elements("459x/-7=65")
 
-        self.assertEqual(1, len(analyze_first.signs))
-        self.assertEqual('+-', analyze_first.signs[0])
-        self.assertEqual(1, len(analyze_second.signs))
-        self.assertEqual('--', analyze_second.signs[0])
-        self.assertEqual(1, len(analyze_third.signs))
-        self.assertEqual('*-', analyze_third.signs[0])
-        self.assertEqual(1, len(analyze_fourth.signs))
-        self.assertEqual('/-', analyze_fourth.signs[0])
+        self.assertEqual(1, len(analyze_first.all_signs))
+        self.assertEqual('+-', analyze_first.all_signs[0])
+        self.assertEqual(1, len(analyze_second.all_signs))
+        self.assertEqual('--', analyze_second.all_signs[0])
+        self.assertEqual(1, len(analyze_third.all_signs))
+        self.assertEqual('*-', analyze_third.all_signs[0])
+        self.assertEqual(1, len(analyze_fourth.all_signs))
+        self.assertEqual('/-', analyze_fourth.all_signs[0])
         
 
     def test_is_numeral(self) : 
@@ -118,8 +148,8 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(2, len(analyze.numbers))
         self.assertEqual(analyze.numbers[0],"5" )
         self.assertEqual(analyze.numbers[1],"7" )
-        self.assertEqual(1, len(analyze.signs))
-        self.assertEqual("+", analyze.signs[0])
+        self.assertEqual(1, len(analyze.all_signs))
+        self.assertEqual("+", analyze.all_signs[0])
 
 
     def test_determine_elements_medium_eq(self) :
@@ -131,8 +161,30 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(analyze.numbers[0],"3" )
         self.assertEqual(analyze.numbers[1],"3" )
         self.assertEqual(analyze.numbers[2],"15" )
-        self.assertEqual(1, len(analyze.signs))
-        self.assertEqual("+", analyze.signs[0])
+        self.assertEqual(1, len(analyze.all_signs))
+        self.assertEqual("+", analyze.all_signs[0])
+
+
+    '''def test_determine_relatif_number(self) : 
+        first_analyze = Analyze("3x+-5=3")
+        second_analyze = Analyze("3x=-5+3")
+
+        first_analyze.determine_all_elements("3x+-5=3")
+        second_analyze.determine_all_elements("3x=-5+3")
+
+        self.assertEqual(3, len(first_analyze.numbers))
+        self.assertEqual(first_analyze.numbers[0],"3" )
+        self.assertEqual(first_analyze.numbers[1],"-5" )
+        self.assertEqual(first_analyze.numbers[2],"3" )
+        self.assertEqual(1, len(first_analyze.all_signs))
+        self.assertEqual("+-", first_analyze.all_signs[0])
+        self.assertEqual(3, len(second_analyze.numbers))
+        self.assertEqual(second_analyze.numbers[0],"3" )
+        self.assertEqual(second_analyze.numbers[1],"-5" )
+        self.assertEqual(second_analyze.numbers[2],"3" )
+        self.assertEqual(1, len(second_analyze.all_signs))
+        self.assertEqual("+-", second_analyze.all_signs[0])'''
+
 
 
     def test_validate_equation_is_ok(self) :
