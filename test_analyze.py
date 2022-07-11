@@ -165,25 +165,17 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual("+", analyze.all_signs[0])
 
 
-    '''def test_determine_relatif_number(self) : 
-        first_analyze = Analyze("3x+-5=3")
-        second_analyze = Analyze("3x=-5+3")
+    def test_determine_unknowns(self) : 
+        first_analyze = Analyze("3x+5x=16")
+        second_analyze = Analyze("30x+512x=16")
 
-        first_analyze.determine_all_elements("3x+-5=3")
-        second_analyze.determine_all_elements("3x=-5+3")
+        first_analyze.determine_all_elements("3x+5x=16")
+        second_analyze.determine_all_elements("30x+512x=16")
 
-        self.assertEqual(3, len(first_analyze.numbers))
-        self.assertEqual(first_analyze.numbers[0],"3" )
-        self.assertEqual(first_analyze.numbers[1],"-5" )
-        self.assertEqual(first_analyze.numbers[2],"3" )
-        self.assertEqual(1, len(first_analyze.all_signs))
-        self.assertEqual("+-", first_analyze.all_signs[0])
-        self.assertEqual(3, len(second_analyze.numbers))
-        self.assertEqual(second_analyze.numbers[0],"3" )
-        self.assertEqual(second_analyze.numbers[1],"-5" )
-        self.assertEqual(second_analyze.numbers[2],"3" )
-        self.assertEqual(1, len(second_analyze.all_signs))
-        self.assertEqual("+-", second_analyze.all_signs[0])'''
+        self.assertEqual(first_analyze.unknowns[0],"3x" )
+        self.assertEqual(first_analyze.unknowns[1],"5x" )
+        self.assertEqual(second_analyze.unknowns[0],"30x")
+        self.assertEqual(second_analyze.unknowns[1],"512x")
 
 
 

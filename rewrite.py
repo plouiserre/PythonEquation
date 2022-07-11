@@ -126,7 +126,38 @@ class Rewrite :
     def simplify(self, text_to_simplify) :
         parts = text_to_simplify.split("=")
         first_part = parts[0]
-        second_part = parts[1]
+        second_part = parts[1]        
+
+        
+        new_first_part = self.__simplify_first_part(first_part)
+        new_second_part = self.__simplify_second_part(second_part)
+
+        text = new_first_part+"="+str(new_second_part)
+
+        return text
+
+
+    def __simplify_first_part(self, first_part) :
+        self.analyze.determine_all_elements(first_part) 
+        if len(self.analyze.unknowns) == 1 :
+            return first_part
+        else : 
+            sign = self.analyze.signs[0]
+            parts = first_part.split(sign)
+            first_number_str = parts[0].replace('x','')
+            second_number_str = parts[1].replace('x','')
+
+            first_number = float(first_number_str)
+            second_number = float(second_number_str)
+
+            solve = Solve()
+            first_part_number= solve.do_the_math(first_number, second_number, sign)
+            new_first_part = str(first_part_number)+'x'
+            return new_first_part
+
+
+
+    def __simplify_second_part(self, second_part): 
         self.analyze.determine_all_elements(second_part)
         first_number = 0
         second_number = 0
@@ -144,7 +175,4 @@ class Rewrite :
 
         solve = Solve()
         new_second_part = solve.do_the_math(first_number, second_number, sign)
-
-        text = first_part+"="+str(new_second_part)
-
-        return text
+        return new_second_part
