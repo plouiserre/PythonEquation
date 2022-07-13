@@ -12,6 +12,7 @@ class Analyze :
         self.all_signs = []
         self.signs = []
         self.unknowns = []
+        self.right_signs = []
         
         
     def get_parts(self) : 
@@ -53,6 +54,7 @@ class Analyze :
             element = text[i]
             if element == '=' :
                 self.is_before_equal = False
+                self.all_signs.append('=')
             if self.is_numeral(element) :
                 self.__manage_numbers(i, element)
             elif element == 'x' or self.is_next_sign_detected:
@@ -83,11 +85,15 @@ class Analyze :
             self.all_signs.append(complex_sign)
             if self.is_before_equal :
                 self.signs.append(complex_sign)
+            else : 
+                self.right_signs.append(complex_sign)
             self.is_next_sign_detected = True
         else :
             self.all_signs.append(element)
             if self.is_before_equal :
                 self.signs.append(element)  
+            else : 
+                self.right_signs.append(element)       
 
 
     def __manage_unknowns(self, i ) : 
@@ -98,6 +104,8 @@ class Analyze :
             if self.is_numeral(last_element) :
                 unknown_element = last_element + unknown_element
             else : 
+                if last_element == '-' : 
+                    unknown_element = last_element + unknown_element
                 break
             index -= 1
         self.unknowns.append(unknown_element+'x')

@@ -83,11 +83,12 @@ class AnalyseTest(unittest.TestCase) :
 
         analyze.determine_all_elements("98x+98*67/45-9=87")
 
-        self.assertEqual(4, len(analyze.all_signs))
+        self.assertEqual(5, len(analyze.all_signs))
         self.assertEqual('+', analyze.all_signs[0])
         self.assertEqual('*', analyze.all_signs[1])
         self.assertEqual('/', analyze.all_signs[2])
         self.assertEqual('-', analyze.all_signs[3])
+        self.assertEqual('=', analyze.all_signs[4])
 
 
     def test_detects_signs_complex(self) : 
@@ -101,14 +102,30 @@ class AnalyseTest(unittest.TestCase) :
         analyze_third.determine_all_elements("85x*-87=654")
         analyze_fourth.determine_all_elements("459x/-7=65")
 
-        self.assertEqual(1, len(analyze_first.all_signs))
+        self.assertEqual(2, len(analyze_first.all_signs))
         self.assertEqual('+-', analyze_first.all_signs[0])
-        self.assertEqual(1, len(analyze_second.all_signs))
+        self.assertEqual(2, len(analyze_second.all_signs))
         self.assertEqual('--', analyze_second.all_signs[0])
-        self.assertEqual(1, len(analyze_third.all_signs))
+        self.assertEqual(2, len(analyze_third.all_signs))
         self.assertEqual('*-', analyze_third.all_signs[0])
-        self.assertEqual(1, len(analyze_fourth.all_signs))
+        self.assertEqual(2, len(analyze_fourth.all_signs))
         self.assertEqual('/-', analyze_fourth.all_signs[0])
+
+
+    def test_detects_righs_signs(self) :
+        analyze_first = Analyze("98x+98=87*67/45-9")
+        analyze_second = Analyze("98x+98=87*-67/-45")
+
+        analyze_first.determine_all_elements("98x+98=87*67/45-9")
+        analyze_second.determine_all_elements("98x+98=87*-67/-45")
+        
+        self.assertEqual(3, len(analyze_first.right_signs))
+        self.assertEqual('*', analyze_first.right_signs[0])
+        self.assertEqual('/', analyze_first.right_signs[1])
+        self.assertEqual('-', analyze_first.right_signs[2])
+        self.assertEqual(2, len(analyze_second.right_signs))
+        self.assertEqual('*-', analyze_second.right_signs[0])
+        self.assertEqual('/-', analyze_second.right_signs[1])
         
 
     def test_is_numeral(self) : 
@@ -148,8 +165,9 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(2, len(analyze.numbers))
         self.assertEqual(analyze.numbers[0],"5" )
         self.assertEqual(analyze.numbers[1],"7" )
-        self.assertEqual(1, len(analyze.all_signs))
+        self.assertEqual(2, len(analyze.all_signs))
         self.assertEqual("+", analyze.all_signs[0])
+        self.assertEqual("=", analyze.all_signs[1])
 
 
     def test_determine_elements_medium_eq(self) :
@@ -161,8 +179,9 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(analyze.numbers[0],"3" )
         self.assertEqual(analyze.numbers[1],"3" )
         self.assertEqual(analyze.numbers[2],"15" )
-        self.assertEqual(1, len(analyze.all_signs))
+        self.assertEqual(2, len(analyze.all_signs))
         self.assertEqual("+", analyze.all_signs[0])
+        self.assertEqual("=", analyze.all_signs[1])
 
 
     def test_determine_unknowns(self) : 
@@ -176,6 +195,23 @@ class AnalyseTest(unittest.TestCase) :
         self.assertEqual(first_analyze.unknowns[1],"5x" )
         self.assertEqual(second_analyze.unknowns[0],"30x")
         self.assertEqual(second_analyze.unknowns[1],"512x")
+
+
+    def test_determine_unknows_both_side(self) : 
+        first_analyze = Analyze("3x+16=5x")
+        second_analyze = Analyze("30x+24=-3x+16")
+        third_analyze = Analyze("7x+2=5-4x")
+
+        first_analyze.determine_all_elements("3x+16=5x")
+        second_analyze.determine_all_elements("30x+24=-3x+16")
+        third_analyze.determine_all_elements("7x+2=5-4x")
+
+        self.assertEqual(first_analyze.unknowns[0],"3x" )
+        self.assertEqual(first_analyze.unknowns[1],"5x" )
+        self.assertEqual(second_analyze.unknowns[0],"30x")
+        self.assertEqual(second_analyze.unknowns[1],"-3x")
+        self.assertEqual(third_analyze.unknowns[0],"7x")
+        self.assertEqual(third_analyze.unknowns[1],"-4x")
 
 
 

@@ -12,7 +12,7 @@ class Solve :
         if self.rewrite.equation_can_be_solved : 
             self.analyze.determine_all_elements(self.rewrite_eq[len(self.rewrite_eq)-1])
             first_number_str =  ''
-            if len(self.analyze.all_signs) == 1 :
+            if len(self.analyze.all_signs) == 2 :
                first_number_str = self.analyze.numbers[0]
             else : 
                 first_number_str = '-'+self.analyze.numbers[0]  
