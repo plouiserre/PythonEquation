@@ -4,6 +4,7 @@ from analyze import Analyze
 from rewrite import Rewrite
 
 #TODO il faudra mocker pour les nombres donc la je vais juste faire un analyze des nombres
+#TODO simplifier l'appel et la declaration de rewrite
 class RewriteTest(unittest.TestCase) :
     def test_rewrite_add_equation(self) : 
         rewrite = Rewrite()
@@ -104,6 +105,36 @@ class RewriteTest(unittest.TestCase) :
         self.assertEqual("3x=15-3", rewrite.step)
         self.assertFalse(rewrite.equation_can_be_solved)
 
+
+    def test_rewrite_multiple_unknown(self) :
+        rewrite = Rewrite()
+
+        analyze = self.__get_analyze("3x+2x-6=12")
+        rewrite.rewrite(analyze)
+
+        self.assertEqual("3x+2x=12+6", rewrite.step)
+        self.assertFalse(rewrite.equation_can_be_solved)
+
+
+    def test_rewrite_multiple_unknown_both_side_addition(self) : 
+        rewrite = Rewrite()
+
+        analyze = self.__get_analyze("3x-6=2x+12")
+        rewrite.rewrite(analyze)
+
+        self.assertEqual("3x-6-2x=12", rewrite.step)
+        self.assertFalse(rewrite.equation_can_be_solved)
+
+
+    def test_rewrite_multiple_unknown_both_side_substraction(self) : 
+        rewrite = Rewrite()
+
+        analyze = self.__get_analyze("3x-6=-2x+12")
+        rewrite.rewrite(analyze)
+
+        self.assertEqual("3x-6+2x=12", rewrite.step)
+        self.assertFalse(rewrite.equation_can_be_solved)
+
         
     def test_simplify_eq(self) :
         rewrite = Rewrite()
@@ -112,6 +143,29 @@ class RewriteTest(unittest.TestCase) :
         text = rewrite.simplify("3x=15-3")
 
         self.assertEqual("3x=12.0", text)
+
+
+    def test_simplify_multiple_unknown(self) : 
+        rewrite = Rewrite()
+        rewrite.analyze = self.__get_analyze("3x+2x=12+6")
+
+        text = rewrite.simplify("3x+2x=12+6")
+
+        self.assertEqual("5.0x=18.0", text)
+
+
+    def test_simplify_multiple_unknown_both_side(self) : 
+        add_rewrite = Rewrite()
+        add_rewrite.analyze = self.__get_analyze("3x-6=2x+12")
+        substract_rewrite = Rewrite()
+        substract_rewrite.analyze = self.__get_analyze("3x-6=-2x+12")
+
+
+        simplify_add = add_rewrite.simplify("3x-6-2x=12")
+        simplify_sub = substract_rewrite.simplify("3x-6+2x=12")
+
+        self.assertEqual("x-6=12", simplify_add)
+        self.assertEqual("5x-6=12", simplify_sub)
 
 
     def __get_analyze(self, text) :

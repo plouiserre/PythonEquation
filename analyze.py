@@ -11,6 +11,8 @@ class Analyze :
         self.numbers = []
         self.all_signs = []
         self.signs = []
+        self.unknowns = []
+        self.right_signs = []
         
         
     def get_parts(self) : 
@@ -43,18 +45,22 @@ class Analyze :
         self.numbers_building = []
         self.is_before_equal = True
         self.is_number_finished = False
+        #TODO externaliser dans une méthode les clears
         self.numbers.clear()
         self.all_signs.clear()
         self.signs.clear()
+        self.unknowns.clear()
         for i in range (0,len(text)) : 
             element = text[i]
             if element == '=' :
                 self.is_before_equal = False
+                self.all_signs.append('=')
             if self.is_numeral(element) :
                 self.__manage_numbers(i, element)
             elif element == 'x' or self.is_next_sign_detected:
+                if element == 'x' :
+                    self.__manage_unknowns(i)
                 self.is_next_sign_detected = False
-                continue
             elif self.is_numeral(element) == False and element != '='  :                  
                 self.__manage_signs(element, i)
         for i in  range (0, len(self.numbers_building)) :
@@ -62,15 +68,15 @@ class Analyze :
 
 
     def __manage_numbers(self, i, element) : 
-                is_number_finished = False
-                self.number = self.number + element
-                if i + 1 >= len(self.text) :
-                    is_number_finished = True
-                if i + 1 < len(self.text) and self.is_numeral(self.text[i+1]) == False:
-                    is_number_finished = True
-                if is_number_finished :
-                    self.numbers_building.append(self.number)
-                    self.number = ''
+        is_number_finished = False
+        self.number = self.number + element
+        if i + 1 >= len(self.text) :
+            is_number_finished = True
+        if i + 1 < len(self.text) and self.is_numeral(self.text[i+1]) == False:
+            is_number_finished = True
+        if is_number_finished :
+            self.numbers_building.append(self.number)
+            self.number = ''
 
 
     def __manage_signs(self,element, i) : 
@@ -79,11 +85,31 @@ class Analyze :
             self.all_signs.append(complex_sign)
             if self.is_before_equal :
                 self.signs.append(complex_sign)
+            else : 
+                self.right_signs.append(complex_sign)
             self.is_next_sign_detected = True
         else :
             self.all_signs.append(element)
             if self.is_before_equal :
                 self.signs.append(element)  
+            else : 
+                self.right_signs.append(element)       
+
+
+    def __manage_unknowns(self, i ) : 
+        unknown_element = ''
+        index = i
+        while index > 0 : 
+            last_element = self.text[index-1]
+            if self.is_numeral(last_element) :
+                unknown_element = last_element + unknown_element
+            else : 
+                if last_element == '-' : 
+                    unknown_element = last_element + unknown_element
+                break
+            index -= 1
+        self.unknowns.append(unknown_element+'x')
+        self.is_next_sign_detected = False
 
 
     def is_numeral(self, element) :
